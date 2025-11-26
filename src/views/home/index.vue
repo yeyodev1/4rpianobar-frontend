@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import FeaturedDish from './FeaturedDish.vue'
 import HeroSection from './HeroSection.vue'
 import HeaderBar from '../../components/layout/HeaderBar.vue'
@@ -7,28 +6,9 @@ import LocationsSection from './LocationsSection.vue'
 import AtmosphereSection from './AtmosphereSection.vue'
 import FoodGallery from './FoodGallery.vue'
 import FooterSection from './FooterSection.vue'
-
-const menuOpen = ref(false)
-function toggleMenu() { menuOpen.value = !menuOpen.value }
-function closeMenu() { menuOpen.value = false }
 </script>
 
 <template>
-  <HeaderBar @toggle-menu="toggleMenu" />
-  <div class="spacer" />
-
-  <transition name="fade">
-    <div v-if="menuOpen" class="overlay">
-      <button class="close" aria-label="Cerrar" @click="closeMenu">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <div class="content">
-        <h2>MENU</h2>
-        <h2>RESERVATIONS</h2>
-      </div>
-    </div>
-  </transition>
-
   <HeroSection />
 
   <main>
@@ -54,57 +34,6 @@ function closeMenu() { menuOpen.value = false }
 </template>
 
 <style lang="scss" scoped>
-.spacer {
-  height: 64px;
-}
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  background: rgba(0, 0, 0, 0.96);
-  display: grid;
-  place-items: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), url('@/assets/static/restaurant/hero.jpg');
-  background-size: cover;
-  background-position: center;
-}
-
-.close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: transparent;
-  border: none;
-  color: $white;
-}
-
-.close i {
-  font-size: 28px;
-}
-
-.content {
-  text-align: center;
-}
-
-.content h2 {
-  font-family: $font-principal;
-  color: $accent-gold;
-  font-size: 32px;
-  letter-spacing: 3px;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 250ms ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-
 main {
   display: grid;
   gap: 48px;
