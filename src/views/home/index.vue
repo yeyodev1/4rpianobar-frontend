@@ -4,6 +4,9 @@ import FeaturedDish from './FeaturedDish.vue'
 import HeroSection from './HeroSection.vue'
 import HeaderBar from '../../components/layout/HeaderBar.vue'
 import LocationsSection from './LocationsSection.vue'
+import AtmosphereSection from './AtmosphereSection.vue'
+import FoodGallery from './FoodGallery.vue'
+import FooterSection from './FooterSection.vue'
 
 const menuOpen = ref(false)
 function toggleMenu() { menuOpen.value = !menuOpen.value }
@@ -41,7 +44,13 @@ function closeMenu() { menuOpen.value = false }
     <FeaturedDish />
 
     <LocationsSection />
+
+    <AtmosphereSection/>
+
+    <FoodGallery />
   </main>
+
+  <FooterSection />
 </template>
 
 <style lang="scss" scoped>

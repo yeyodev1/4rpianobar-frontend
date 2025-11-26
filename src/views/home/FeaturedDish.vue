@@ -22,7 +22,6 @@ import heroImg from '@/assets/static/restaurant/hero.jpg'
 
 <style lang="scss" scoped>
 @use 'sass:color';
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap');
 
 .card {
   display: flex;
