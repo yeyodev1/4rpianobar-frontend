@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import heroImg from '@/assets/static/restaurant/hero.jpg'
 </script>
 
 <template>
   <article class="card">
     <div class="card__image-container">
-      <img :src="heroImg" alt="Plato destacado" class="card__image" />
+      <img src="https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169852/food_erplqo.jpg" alt="Plato destacado" class="card__image" />
     </div>
     <div class="card__content">
       <h3 class="card__title">SABOREA LA PASIÓN DE LATINOAMÉRICA EN CADA BOCADO</h3>
@@ -27,7 +26,7 @@ import heroImg from '@/assets/static/restaurant/hero.jpg'
   display: flex;
   flex-direction: column;
   width: 92%;
-  max-width: 1100px;
+  max-width: 1420px;
   margin: 12px auto;
   border-radius: 24px;
   overflow: hidden;
@@ -95,7 +94,7 @@ import heroImg from '@/assets/static/restaurant/hero.jpg'
     flex-direction: row;
     min-height: 400px;
     width: 88%;
-    max-width: 1200px;
+    max-width: 1420px;
     border-radius: 28px;
   }
 
