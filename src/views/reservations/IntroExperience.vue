@@ -11,9 +11,6 @@ const images: DisplayImage[] = [
 ]
 
 const mainImage = images[0]!
-const whatsappHref = 'https://wa.me/593979279877'
-const scheduleText = '7:00 PM – 3:00 AM'
-const mapsHref = 'https://www.google.com/maps/place/4R+Piano+Bar/@-2.1384612,-79.8679898,17z/data=!3m1!4b1!4m6!3m5!1s0x902d6d6036bace83:0xcaf52612d9eac4a9!8m2!3d-2.1384666!4d-79.8654149!16s%2Fg%2F11ty26g7n1?entry=ttu&g_ep=EgoyMDI1MTEyMy4xIKXMDSoASAFQAw%3D%3D'
 </script>
 
 <template>
@@ -51,13 +48,13 @@ const mapsHref = 'https://www.google.com/maps/place/4R+Piano+Bar/@-2.1384612,-79
   margin: 0 auto;
   display: grid;
   gap: 16px;
-  padding: 24px 16px
 }
 
 .intro__text {
   display: grid;
   gap: 10px;
-  padding: 20px 8px
+  padding: 20px 8px;
+  max-width: 1440px;
 }
 
 .intro__eyebrow {
@@ -88,7 +85,8 @@ const mapsHref = 'https://www.google.com/maps/place/4R+Piano+Bar/@-2.1384612,-79
   overflow: visible;
   background: $gray-900;
   width: 100vw;
-  margin-inline: calc(50% - 50vw)
+  margin-inline: calc(50% - 50vw);
+  margin-bottom: 0
 }
 
 .intro__image {
