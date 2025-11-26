@@ -38,6 +38,12 @@ function sendToWhatsapp() {
             <a href="https://www.instagram.com/4rpianobar.ec/" aria-label="Instagram" class="footer__social"><i class="fa-brands fa-instagram"></i></a>
           </div>
         </div>
+
+        <div class="footer__row footer__dev">
+          <span class="footer__made">Desarrollado por
+            <a href="https://yeyo.dev/" target="_blank" rel="noopener noreferrer" class="footer__dev-link">yeyodev</a>
+          </span>
+        </div>
       </div>
     </section>
   </footer>
@@ -171,6 +177,21 @@ function sendToWhatsapp() {
     color: $gray-300;
     font-size: 0.95rem;
     text-decoration: none;
+  }
+
+  &__dev {
+    justify-content: center;
+  }
+
+  &__made {
+    color: $gray-500;
+    font-size: 0.9rem;
+  }
+
+  &__dev-link {
+    color: $accent-gold;
+    text-decoration: none;
+    margin-left: 6px;
   }
 }
 
