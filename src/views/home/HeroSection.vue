@@ -12,7 +12,7 @@
 <style lang="scss" scoped>
 .hero {
   position: relative;
-  min-height: 70vh;
+  min-height: 90vh;
   background-image: linear-gradient(rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.6)), url('@/assets/static/restaurant/hero.jpg');
   background-size: cover;
   background-position: center;

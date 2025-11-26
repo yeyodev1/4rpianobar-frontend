@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import FeaturedDish from './FeaturedDish.vue'
 import HeroSection from './HeroSection.vue'
 import HeaderBar from '../../components/layout/HeaderBar.vue'
+import LocationsSection from './LocationsSection.vue'
 
 const menuOpen = ref(false)
 function toggleMenu() { menuOpen.value = !menuOpen.value }
@@ -39,15 +40,11 @@ function closeMenu() { menuOpen.value = false }
 
     <FeaturedDish />
 
-    <section class="gallery">
-      <div class="card" /><div class="card" /><div class="card" />
-    </section>
+    <LocationsSection />
   </main>
 </template>
 
 <style lang="scss" scoped>
-/* navbar styles moved to HeaderBar.vue */
-
 .spacer {
   height: 64px;
 }
@@ -127,19 +124,7 @@ main {
 }
 
 
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  padding: 24px;
-}
-
-.gallery .card {
-  min-height: 160px;
-  background-image: linear-gradient(rgba(10, 10, 10, 0.5), rgba(10, 10, 10, 0.7)), url('@/assets/static/restaurant/hero.jpg');
-  background-size: cover;
-  background-position: center;
-}
+/* gallery styles moved to GalleryGrid.vue */
 
 @media (min-width: 768px) {
   .content h2 {
