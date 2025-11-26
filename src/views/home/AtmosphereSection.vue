@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import image from '@/assets/static/restaurant/hero.jpg'
-
 type AtmosphereImage = { src: string; alt: string }
 
 const images: AtmosphereImage[] = [
-  { src: image, alt: 'Cena entre amigos con bengalas' },
-  { src: image, alt: 'Show de bailarina de fuego' }
+  { src: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171204/Foto_001_5_qtz4ad.jpg', alt: 'Cena entre amigos con bengalas' },
+  { src: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171485/Imagen_002_1_nkcu4w.jpg', alt: 'Show de bailarina de fuego' }
 ]
 </script>
 
@@ -24,9 +22,10 @@ const images: AtmosphereImage[] = [
 <style lang="scss" scoped>
 .atmosphere {
   background: $text-dark;
-  padding: 4rem 1rem;
   display: grid;
   gap: 1.5rem;
+  width: 80%;
+  margin: 0 auto;
 
   &__title {
     font-family: $font-principal;
@@ -70,7 +69,6 @@ const images: AtmosphereImage[] = [
 
 @media (min-width: 768px) {
   .atmosphere {
-    padding: 6rem 2rem;
 
     &__title {
       font-size: 2rem;
