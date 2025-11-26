@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import image1 from '@/assets/static/restaurant/hero.jpg'
-
 
 type GalleryItem = { src: string; alt: string }
 
