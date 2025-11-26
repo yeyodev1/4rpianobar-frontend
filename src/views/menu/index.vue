@@ -4,6 +4,7 @@ import SectionSteak from './SectionSteak.vue'
 import SectionDessert from './SectionDessert.vue'
 import SectionMixology from './SectionMixology.vue'
 import SectionCta from './SectionCta.vue'
+import FooterSection from '../home/FooterSection.vue'
 
 const images = {
   hero: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169930/food3_fmy8ca.jpg',
@@ -24,6 +25,7 @@ const images = {
   <SectionMixology :image-src="images.cocktail" />
 
   <SectionCta />
+  <FooterSection />
 </template>
 
 <style lang="scss" scoped>
