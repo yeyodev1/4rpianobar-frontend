@@ -1,61 +1,20 @@
-@font-face {
-  font-family: 'PPPangaia';
-  src: url('./fonts/pangaia-font/PPPangaia-Ultralight-BF654c530cd00f1.otf') format('opentype');
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'PPPangaia';
-  src: url('./fonts/pangaia-font/PPPangaia-UltralightItalic-BF654c530ca889f.otf') format('opentype');
-  font-weight: 200;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'PPPangaia';
-  src: url('./fonts/pangaia-font/PPPangaia-Medium-BF654c530cc86d5.otf') format('opentype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'PPPangaia';
-  src: url('./fonts/pangaia-font/PPPangaia-MediumItalic-BF654c530bedffb.otf') format('opentype');
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'PPPangaia';
-  src: url('./fonts/pangaia-font/PPPangaia-Bold-BF654c530cc27f8.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'PPPangaia';
-  src: url('./fonts/pangaia-font/PPPangaia-BoldItalic-BF654c530c8d2fa.otf') format('opentype');
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
-
+// Elegant system font stack (no custom files, widely supported)
 :root {
-  --font-primary: 'PPPangaia', 'Montserrat', sans-serif;
-  --font-montserrat: 'Montserrat', sans-serif;
+  --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-montserrat: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-$font-principal: 'PPPangaia', 'Montserrat', sans-serif;
-$font-secondary: 'Montserrat', sans-serif;
-$font-accent: 'Montserrat', sans-serif;
-$font-interface: 'Montserrat', sans-serif;
-$font-fallback: 'Arial', sans-serif;
+$font-principal:  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-secondary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-accent:    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-interface: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-fallback:  'Arial', sans-serif;
 
-@mixin heading-font($weight: 400) {
+@mixin heading-font($weight: 600) {
   font-family: $font-principal;
   font-weight: $weight;
   line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 @mixin body-font($weight: 400) {
