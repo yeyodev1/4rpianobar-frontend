@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import heroImg from '@/assets/static/restaurant/hero.jpg'
 
 const locations = [
-  { id: 1, name: 'POLANCO', image: heroImg },
-  { id: 2, name: 'CANCÚN', image: heroImg },
-  { id: 3, name: 'TULUM', image: heroImg },
-  { id: 4, name: 'LOS CABOS', image: heroImg },
+  { id: 1, name: 'POLANCO', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170812/Imagen_001_1_oyksp0.jpg' },
+  { id: 2, name: 'CANCÚN', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170856/Imagen_001_2_lltzgr.jpg' },
+  { id: 3, name: 'TULUM', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170779/Foto_001_4_bii8jj.jpg' },
+  { id: 4, name: 'LOS CABOS', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171006/007_Julio_yovh85.jpg' },
 ]
 </script>
 
 <template>
   <section class="locations">
-    <h2 class="locations__title">NUESTRAS UBICACIONES</h2>
+    <h2 class="locations__title">NUESTROS EVENTOS</h2>
     <div class="cards">
       <div
         v-for="loc in locations"
