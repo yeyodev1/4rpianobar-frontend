@@ -132,15 +132,18 @@ onUnmounted(() => {
     background: $gray-900;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
     cursor: pointer;
+    aspect-ratio: 1 / 1.1;
+    contain: layout paint size;
   }
 
   &__image {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
-    aspect-ratio: 1 / 1.1;
     object-fit: cover;
     transition: transform 260ms ease, filter 260ms ease;
+    will-change: transform, filter;
+    transform-origin: center;
   }
 
   &__card:hover &__image {
