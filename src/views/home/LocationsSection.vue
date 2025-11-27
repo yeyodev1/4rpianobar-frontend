@@ -1,10 +1,10 @@
 <script setup lang="ts">
 
 const locations = [
-  { id: 1, name: 'POLANCO', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170812/Imagen_001_1_oyksp0.jpg' },
-  { id: 2, name: 'CANCÚN', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170856/Imagen_001_2_lltzgr.jpg' },
-  { id: 3, name: 'TULUM', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170779/Foto_001_4_bii8jj.jpg' },
-  { id: 4, name: 'LOS CABOS', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171006/007_Julio_yovh85.jpg' },
+  { id: 1, name: 'PIANO LIVE', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170027/Foto_001_ztlntr.jpg' },
+  { id: 2, name: 'MIXOLOGÍA DE AUTOR', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169855/food2_bhirci.jpg' },
+  { id: 3, name: 'CENA DEGUSTACIÓN', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169930/food3_fmy8ca.jpg' },
+  { id: 4, name: 'EVENTOS CORPORATIVOS', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171204/Foto_001_5_qtz4ad.jpg' },
 ]
 </script>
 
@@ -106,4 +106,3 @@ const locations = [
   }
 }
 </style>
-
