@@ -27,11 +27,6 @@ const images: JewelImage[] = [
         <button type="button" class="jewel__btn">MENÚ COMPLETO →</button>
       </div>
     </div>
-
-    <button type="button" class="jewel__nye" aria-label="New Year Eve">
-      <i class="fa-solid fa-champagne-glasses"></i>
-      <span>NYE</span>
-    </button>
   </section>
 </template>
 

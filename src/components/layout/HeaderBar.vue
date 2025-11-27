@@ -4,20 +4,25 @@ const props = defineProps({
 })
 const emit = defineEmits(['toggle-menu'])
 function onToggle() { emit('toggle-menu') }
+
+const whatsappNumber = '593979279877'
+const whatsappMessage = 'Hola, deseo reservar en 4R Piano Bar'
+const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
+const phoneLink = props.phoneHref || whatsappHref
 </script>
 
 <template>
   <header class="navbar">
     <div class="navbar__inner">
       <div class="left">
-        <button class="reserve">RESERVAR AHORA</button>
+        <a :href="whatsappHref" target="_blank" rel="noopener" class="reserve">RESERVAR AHORA</a>
       </div>
       <div class="center">
         <div class="brand">4R PIANO BAR</div>
         <div class="subtitle">COCINA LATINOAMERICANA</div>
       </div>
       <div class="right">
-        <a :href="phoneHref || 'tel:+000000000'" aria-label="Teléfono" class="icon">
+        <a :href="phoneLink" target="_blank" rel="noopener" aria-label="WhatsApp" class="icon">
           <i class="fa-solid fa-phone"></i>
         </a>
         <button class="icon" aria-label="Menú" @click="onToggle">
@@ -78,6 +83,7 @@ function onToggle() { emit('toggle-menu') }
   padding: 10px 16px;
   border-radius: 8px;
   font-weight: 600;
+  text-decoration: none;
 }
 
 .brand {

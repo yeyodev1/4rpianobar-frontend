@@ -9,6 +9,12 @@ const destinations: Destination[] = [
   { name: 'COCINA ITALIANA CLÁSICA', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170779/Foto_001_4_bii8jj.jpg' },
   { name: 'EXPERIENCIA LATINA CONTEMPORÁNEA', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171006/007_Julio_yovh85.jpg' },
 ]
+
+const whatsappNumber = '593979279877'
+function whatsappHrefFor(name: string) {
+  const msg = `Hola, quiero más información sobre ${name} en 4R Piano Bar`
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`
+}
 </script>
 
 <template>
@@ -25,15 +31,10 @@ const destinations: Destination[] = [
             <div class="card__name">{{ d.name }}</div>
             <div class="card__meta">Guayaquil, Ecuador</div>
           </div>
-          <button type="button" class="card__btn">DESCUBRE MÁS</button>
+          <a :href="whatsappHrefFor(d.name)" target="_blank" rel="noopener" class="card__btn" aria-label="Descubre más en WhatsApp">DESCUBRE MÁS</a>
         </div>
       </article>
     </div>
-
-    <button type="button" class="destinations__nye" aria-label="New Year Eve">
-      <i class="fa-solid fa-champagne-glasses"></i>
-      <span>NYE</span>
-    </button>
   </section>
 </template>
 
@@ -118,6 +119,7 @@ const destinations: Destination[] = [
 }
 
 .card__btn {
+  text-decoration: none;
   background: $white;
   color: $text-dark;
   border: none;
@@ -136,29 +138,6 @@ const destinations: Destination[] = [
   color: $text-dark
 }
 
-.destinations__nye {
-  position: fixed;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background: $BRAND-GARNET;
-  color: $white;
-  border: 1px solid rgba($accent-gold, .4);
-  border-radius: 12px;
-  padding: 12px 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  cursor: pointer;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, .4)
-}
-
-.destinations__nye i {
-  font-size: 18px
-}
 
 @media(min-width:768px) {
   .destinations__grid {

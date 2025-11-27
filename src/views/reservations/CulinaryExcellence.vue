@@ -4,6 +4,10 @@ const body = 'Sumérgete en una atmósfera única donde los ritmos latinos cobra
 
 const facadeImage = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170812/Imagen_001_1_oyksp0.jpg'
 const ambienceImage = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169852/food_erplqo.jpg'
+
+const whatsappNumber = '593979279877'
+const whatsappMessage = 'Hola, quiero vivir la experiencia en 4R Piano Bar'
+const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
 </script>
 
 <template>
@@ -21,11 +25,6 @@ const ambienceImage = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v176416
         <img :src="ambienceImage" alt="Percusión y ambiente nocturno" class="culinary__media-image" />
       </figure>
     </div>
-
-    <button type="button" class="culinary__nye" aria-label="New Year Eve">
-      <i class="fa-solid fa-champagne-glasses"></i>
-      <span>NYE</span>
-    </button>
   </section>
 </template>
 
@@ -94,7 +93,7 @@ const ambienceImage = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v176416
   object-fit: cover
 }
 
-.culinary__nye {
+.culinary__cta {
   position: fixed;
   right: 16px;
   top: 50%;
@@ -114,7 +113,7 @@ const ambienceImage = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v176416
   box-shadow: 0 12px 28px rgba(0, 0, 0, .4)
 }
 
-.culinary__nye i {
+.culinary__cta i {
   font-size: 18px
 }
 
@@ -144,4 +143,3 @@ const ambienceImage = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v176416
   }
 }
 </style>
-

@@ -69,11 +69,6 @@ const openMap = () => window.open(mapUrl, '_blank')
         </div>
       </div>
     </div>
-
-    <button type="button" class="events__nye" aria-label="New Year Eve">
-      <i class="fa-solid fa-champagne-glasses"></i>
-      <span>NYE</span>
-    </button>
   </section>
 </template>
 
@@ -222,30 +217,6 @@ const openMap = () => window.open(mapUrl, '_blank')
 .events__map:hover .events__map-overlay {
   transform: translateY(0);
   opacity: 1
-}
-
-.events__nye {
-  position: fixed;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background: $BRAND-GARNET;
-  color: $white;
-  border: 1px solid rgba($accent-gold, .4);
-  border-radius: 12px;
-  padding: 12px 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  cursor: pointer;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, .4)
-}
-
-.events__nye i {
-  font-size: 18px
 }
 
 @media(min-width:1024px) {
