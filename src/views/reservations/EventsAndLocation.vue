@@ -5,7 +5,7 @@ const contactEmail = 'eventos@4rpianobar.com'
 const contactPhone = '+593 97 927 9877'
 
 const directionsTitle = 'INDICACIONES'
-const addressText = 'Quinta Avenida 123, Playa del Carmen, Quintana Roo'
+const addressText = 'Dale click al mapa interactivo para ver nuestra ubicación exacta en google maps'
 const servicesTitle = 'SERVICIOS'
 const services = [
   { icon: 'fa-square-parking', text: 'Estacionamiento Privado' },
@@ -209,6 +209,19 @@ const openMap = () => window.open(mapUrl, '_blank')
 .events__map-center span {
   color: $gray-300;
   letter-spacing: 1px
+}
+
+.events__map-overlay span {
+  letter-spacing: 1px
+}
+
+.events__map:hover .events__map-image {
+  transform: scale(1.03)
+}
+
+.events__map:hover .events__map-overlay {
+  transform: translateY(0);
+  opacity: 1
 }
 
 .events__nye {
