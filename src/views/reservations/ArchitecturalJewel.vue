@@ -24,7 +24,7 @@ const images: JewelImage[] = [
       <div class="jewel__text">
         <h3 class="jewel__subtitle">{{ subtitle }}</h3>
         <p class="jewel__paragraph">{{ paragraph }}</p>
-        <button type="button" class="jewel__btn">MENÚ COMPLETO →</button>
+        <RouterLink to="/menu" class="jewel__btn" aria-label="Ver menú completo">MENÚ COMPLETO →</RouterLink>
       </div>
     </div>
   </section>

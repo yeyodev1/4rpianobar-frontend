@@ -14,7 +14,9 @@
         posuere, sapien vitae dictum tristique, nibh nisl fermentum elit, quis posuere nisl
         lectus non massa.
       </p>
-      <a href="#" class="card__link">Menú completo <i class="fa-solid fa-arrow-right"></i></a>
+      <RouterLink to="/menu" class="card__link" aria-label="Ver menú completo">
+        Menú completo <i class="fa-solid fa-arrow-right"></i>
+      </RouterLink>
     </div>
   </article>
 </template>
