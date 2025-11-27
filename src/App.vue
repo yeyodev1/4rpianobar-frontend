@@ -45,7 +45,7 @@ function gotoReservations() { closeMenu(); router.push({ name: 'reservations' })
   background: rgba(0, 0, 0, 0.96);
   display: grid;
   place-items: center;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), url('@/assets/static/restaurant/hero.jpg');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), url('@/assets/static/restaurant/hero.png');
   background-size: cover;
   background-position: center;
 }

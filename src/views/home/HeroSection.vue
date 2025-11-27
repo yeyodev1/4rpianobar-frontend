@@ -13,7 +13,7 @@
 .hero {
   position: relative;
   min-height: 90vh;
-  background-image: linear-gradient(rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.6)), url('@/assets/static/restaurant/hero.jpg');
+  background-image: linear-gradient(rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.6)), url('@/assets/static/restaurant/hero.png');
   background-size: cover;
   background-position: center;
   display: grid;
