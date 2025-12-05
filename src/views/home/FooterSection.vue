@@ -39,6 +39,18 @@ function sendToWhatsapp() {
           </div>
         </div>
 
+        <div class="footer__legal">
+          <span class="footer__legal-item">Razón Social: <strong>4REGIONES S.A.S.</strong></span>
+          <span class="footer__legal-sep">·</span>
+          <span class="footer__legal-item">RUC: 0993258571001</span>
+          <span class="footer__legal-sep">·</span>
+          <span class="footer__legal-item">Dirección: Av. Los Arcos S/N y Vía Samborondón Km 1.5, Edificio Xima, Oficina 002, Samborondón, Guayas, Ecuador</span>
+          <span class="footer__legal-sep">·</span>
+          <span class="footer__legal-item">Teléfono: <a href="tel:+593992950939" class="footer__legal-link">+593 99 295 0939</a></span>
+          <span class="footer__legal-sep">·</span>
+          <span class="footer__legal-item">Correo: <a href="mailto:4rpianobar@gmail.com" class="footer__legal-link">4rpianobar@gmail.com</a></span>
+        </div>
+
         <div class="footer__row footer__dev">
           <span class="footer__made">Desarrollado por
             <a href="https://yeyo.dev/" target="_blank" rel="noopener noreferrer" class="footer__dev-link">yeyodev</a>
@@ -140,6 +152,31 @@ function sendToWhatsapp() {
   &__copy {
     color: $gray-400;
     font-size: 0.9rem;
+  }
+
+  &__legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 10px;
+    color: $gray-400;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  &__legal-item {
+    color: $gray-400;
+  }
+
+  &__legal-sep {
+    color: $gray-700;
+  }
+
+  &__legal-link {
+    color: $accent-gold;
+    text-decoration: none;
   }
 
   &__socials {
