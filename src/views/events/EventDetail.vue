@@ -9,6 +9,7 @@ const router = useRouter();
 const event = ref<Event | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
+const paymentResponse = ref<any>(null);
 
 // Reutilizamos la lógica de mapeo que ya probamos en EventCard, 
 // pero adaptada aquí ya que necesitamos la data para poblar la vista completa.
@@ -16,7 +17,7 @@ const error = ref<string | null>(null);
 const mapStoryToEvent = (story: any): Event => {
   const content = story.content;
   const dateObj = new Date(content.fecha || new Date());
-  
+
   const date = dateObj.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
   const time = dateObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
@@ -52,7 +53,7 @@ const fetchEventDetail = async () => {
     loading.value = true;
     // Asumimos que el slug en la URL corresponde al slug de Storyblok
     const story = await Storyblok.getEventBySlug(slug);
-    
+
     if (story) {
       event.value = mapStoryToEvent(story);
     } else {
@@ -65,14 +66,13 @@ const fetchEventDetail = async () => {
     loading.value = false;
   }
 };
+onMounted(async () => {
+  fetchEventDetail();
+});
 
 const goBack = () => {
   router.push({ name: 'events' });
 };
-
-onMounted(() => {
-  fetchEventDetail();
-});
 </script>
 
 <template>
@@ -87,6 +87,14 @@ onMounted(() => {
     </div>
 
     <article v-else-if="event" class="event-content">
+      <div v-if="paymentResponse && paymentResponse.error" class="global-error-alert">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>
+           Nota: Si ves errores de carga, es probable que la <strong>Referencia de Pago</strong> de prueba haya expirado. 
+           En producción, esta referencia debe ser única por transacción.
+        </span>
+      </div>
+
       <header class="event-header" :style="{ backgroundImage: `url(${event.imageUrl})` }">
         <div class="event-header__overlay"></div>
         <div class="event-header__content">
@@ -121,9 +129,31 @@ onMounted(() => {
           <div class="reservation-card">
             <h3>Reserva tu lugar</h3>
             <p>Asegura tu asistencia a este evento exclusivo.</p>
-            <a href="https://wa.me/593979279877?text=Hola,%20deseo%20reservar%20para%20el%20evento" target="_blank" class="btn-reserve">
-              Reservar por WhatsApp
+            
+            <button v-if="event.price" class="btn-reserve btn-pay">
+              <i class="fa-regular fa-credit-card"></i> Pagar con Tarjeta
+            </button>
+
+            <a href="https://wa.me/593979279877?text=Hola,%20deseo%20reservar%20para%20el%20evento" target="_blank" class="btn-reserve btn-whatsapp">
+              <i class="fa-brands fa-whatsapp"></i> Reservar por WhatsApp
             </a>
+
+            <div v-if="paymentResponse" class="payment-response">
+              <h4>Resultado:</h4>
+              <div class="response-content">
+                <template v-if="paymentResponse.transaction">
+                  <p class="success"><i class="fa-solid fa-check-circle"></i> Transacción Exitosa</p>
+                  <p>ID: {{ paymentResponse.transaction.id }}</p>
+                </template>
+                <template v-else-if="paymentResponse.error">
+                  <p class="error"><i class="fa-solid fa-circle-exclamation"></i> Error</p>
+                  <p>{{ paymentResponse.error.description }}</p>
+                </template>
+                <template v-else>
+                  <pre>{{ JSON.stringify(paymentResponse, null, 2) }}</pre>
+                </template>
+              </div>
+            </div>
           </div>
         </aside>
       </div>
@@ -149,6 +179,18 @@ onMounted(() => {
   }
 }
 
+.global-error-alert {
+  background: #fff3cd;
+  color: #856404;
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid #ffeeba;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .event-header {
   position: relative;
   height: 60vh;
@@ -161,7 +203,7 @@ onMounted(() => {
   &__overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.3) 100%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0.3) 100%);
   }
 
   &__content {
@@ -210,7 +252,7 @@ onMounted(() => {
   display: flex;
   gap: 2rem;
   font-size: 1.1rem;
-  
+
   .meta-item {
     display: flex;
     align-items: center;
@@ -238,7 +280,7 @@ onMounted(() => {
   background: colors.$white;
   padding: 2.5rem;
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .event-description {
@@ -265,6 +307,7 @@ onMounted(() => {
       align-items: center;
       gap: 0.5rem;
     }
+
     p {
       font-size: 1.2rem;
       font-weight: 600;
@@ -304,10 +347,66 @@ onMounted(() => {
   font-weight: bold;
   width: 100%;
   transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  &.btn-pay {
+    background: colors.$accent-gold;
+    color: colors.$text-dark;
+  }
+
+  &.btn-whatsapp {
+    background: #25D366;
+    color: colors.$white;
+  }
+}
+
+.payment-response {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  text-align: left;
+  font-size: 0.9rem;
+
+  h4 {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .response-content {
+    background: colors.$white;
+    color: colors.$text-dark;
+    padding: 0.5rem;
+    border-radius: 4px;
+    overflow-x: auto;
+  }
+
+  .success {
+    color: #2e7d32;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .error {
+    color: #c62828;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 }
 
@@ -321,6 +420,8 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
