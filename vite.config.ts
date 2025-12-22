@@ -18,5 +18,8 @@ export default defineConfig({
         additionalData: `@use "@/styles/index.scss" as *;`,
       },
     },
-  }
+  },
+  server: {
+    allowedHosts: ['3d5eb1be3248.ngrok-free.app'],
+  },
 })
