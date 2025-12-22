@@ -9,6 +9,7 @@ function closeMenu() { menuOpen.value = false }
 const router = useRouter()
 const route = useRoute()
 function gotoMenu() { closeMenu(); router.push({ name: 'menu' }) }
+function gotoEvents() { closeMenu(); router.push({ name: 'events' }) }
 function gotoHome() { closeMenu(); router.push({ name: 'home' }) }
 function gotoReservations() { closeMenu(); router.push({ name: 'reservations' }) }
 </script>
@@ -25,6 +26,7 @@ function gotoReservations() { closeMenu(); router.push({ name: 'reservations' })
       <div class="content">
         <button v-if="route.name !== 'home'" class="overlay__link" @click="gotoHome">HOME</button>
         <button v-if="route.name !== 'menu'" class="overlay__link" @click="gotoMenu">MENU</button>
+        <button v-if="route.name !== 'events'" class="overlay__link" @click="gotoEvents">EVENTS</button>
         <button v-if="route.name !== 'reservations'" class="overlay__link" @click="gotoReservations">RESERVATIONS</button>
       </div>
     </div>
