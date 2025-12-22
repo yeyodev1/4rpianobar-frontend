@@ -66,6 +66,11 @@ const fetchEventDetail = async () => {
     loading.value = false;
   }
 };
+
+const handleBuyTicket = () => {
+  alert('Función de compra de entradas no implementada.');
+}
+
 onMounted(async () => {
   fetchEventDetail();
 });
@@ -130,7 +135,7 @@ const goBack = () => {
             <h3>Reserva tu lugar</h3>
             <p>Asegura tu asistencia a este evento exclusivo.</p>
             
-            <button v-if="event.price" class="btn-reserve btn-pay">
+            <button v-if="event.price" @click="handleBuyTicket" class="btn-reserve btn-pay">
               <i class="fa-regular fa-credit-card"></i> Pagar con Tarjeta
             </button>
 
