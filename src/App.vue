@@ -67,6 +67,10 @@ function gotoReservations() { closeMenu(); router.push({ name: 'reservations' })
 
 .content {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
 }
 
 .content h2 {
