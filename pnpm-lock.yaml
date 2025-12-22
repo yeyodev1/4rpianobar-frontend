@@ -11,6 +11,9 @@ importers:
       pinia:
         specifier: ^3.0.3
         version: 3.0.4(typescript@5.9.3)(vue@3.5.24(typescript@5.9.3))
+      storyblok-js-client:
+        specifier: ^7.2.1
+        version: 7.2.1
       vue:
         specifier: ^3.5.22
         version: 3.5.24(typescript@5.9.3)
@@ -1049,6 +1052,9 @@ packages:
   speakingurl@14.0.1:
     resolution: {integrity: sha512-1POYv7uv2gXoyGFpBCmpDVSNV74IfsWlDW216UPjbWufNf+bSU6GdbDsxdcxtfwb4xlI3yxzOTKClUosxARYrQ==}
     engines: {node: '>=0.10.0'}
+
+  storyblok-js-client@7.2.1:
+    resolution: {integrity: sha512-dx6BOkzFcClubN2pXHAFLAMXBsTzcHVlDbKVJtUSNw17ftfyiq12mj92HiYtXlIPw+3I0U6VTPBxoYAEIPEK0Q==}
 
   superjson@2.2.5:
     resolution: {integrity: sha512-zWPTX96LVsA/eVYnqOM2+ofcdPqdS1dAF1LN4TS2/MWuUpfitd9ctTa87wt4xrYnZnkLtS69xpBdSxVBP5Rm6w==}
@@ -2107,6 +2113,8 @@ snapshots:
   source-map-js@1.2.1: {}
 
   speakingurl@14.0.1: {}
+
+  storyblok-js-client@7.2.1: {}
 
   superjson@2.2.5:
     dependencies:
