@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Storyblok from '@/services/storyblok';
 import ReservationModal from '@/components/ui/ReservationModal.vue';
@@ -11,6 +11,21 @@ const event = ref<Event | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const showReservationModal = ref(false);
+const guestCount = ref(2);
+
+const incrementGuests = () => {
+  if (guestCount.value < 20) guestCount.value++;
+};
+
+const decrementGuests = () => {
+  if (guestCount.value > 1) guestCount.value--;
+};
+
+const whatsappDirectUrl = computed(() => {
+  const peopleText = guestCount.value > 1 ? ` para ${guestCount.value} personas` : ' para 1 persona';
+  const text = `Hola, deseo reservar${peopleText} para el evento${event.value ? `: ${event.value.title}` : ''}.`;
+  return `https://wa.me/593979279877?text=${encodeURIComponent(text)}`;
+});
 
 // Reutilizamos la lógica de mapeo que ya probamos en EventCard, 
 // pero adaptada aquí ya que necesitamos la data para poblar la vista completa.
@@ -129,11 +144,20 @@ const goBack = () => {
             <h3>Reserva tu lugar</h3>
             <p>Asegura tu asistencia a este evento exclusivo.</p>
             
+            <div class="guest-selector">
+              <label class="selector-label">Personas:</label>
+              <div class="counter-wrapper">
+                <button @click="decrementGuests" :disabled="guestCount <= 1" class="btn-counter" aria-label="Disminuir">-</button>
+                <span class="guest-count">{{ guestCount }}</span>
+                <button @click="incrementGuests" :disabled="guestCount >= 20" class="btn-counter" aria-label="Aumentar">+</button>
+              </div>
+            </div>
+
             <button v-if="event.price" @click="handleBuyTicket" class="btn-reserve btn-pay">
               <i class="fa-regular fa-credit-card"></i> Pagar con Tarjeta / Reservar
             </button>
 
-            <a href="https://wa.me/593979279877?text=Hola,%20deseo%20reservar%20para%20el%20evento" target="_blank" class="btn-reserve btn-whatsapp">
+            <a :href="whatsappDirectUrl" target="_blank" class="btn-reserve btn-whatsapp">
               <i class="fa-brands fa-whatsapp"></i> Reservar por WhatsApp
             </a>
 
@@ -141,6 +165,7 @@ const goBack = () => {
             <ReservationModal 
               :is-open="showReservationModal" 
               :event-name="event.title"
+              :guest-count="guestCount"
               @close="showReservationModal = false"
             />
           </div>
@@ -312,6 +337,61 @@ const goBack = () => {
     margin-bottom: 1.5rem;
     opacity: 0.9;
   }
+}
+
+.guest-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+
+  .selector-label {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+}
+
+.counter-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-counter {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: colors.$white;
+  color: colors.$BRAND-PRIMARY;
+  font-weight: bold;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.1);
+    background: colors.$accent-gold;
+    color: colors.$text-dark;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.guest-count {
+  font-size: 1.2rem;
+  font-weight: bold;
+  min-width: 1.5rem;
+  text-align: center;
 }
 
 .btn-reserve {
