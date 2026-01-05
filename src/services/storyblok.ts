@@ -16,13 +16,13 @@ class StoryblokService {
 
   /**
    * Obtiene la lista de eventos desde Storyblok
-   * Filtra por la carpeta 'night-events/' y ordena por fecha ascendente
+   * Filtra por la carpeta 'events/' y ordena por fecha ascendente
    */
   async getEvents() {
     try {
       const response = await this.client.get('cdn/stories', {
         version: 'published',
-        starts_with: 'night-events/',
+        starts_with: 'events/',
         sort_by: 'content.fecha:asc',
       });
       return response.data.stories;
@@ -59,7 +59,7 @@ class StoryblokService {
    */
   async getEventBySlug(slug: string) {
     try {
-      const response = await this.client.get(`cdn/stories/night-events/${slug}`, {
+      const response = await this.client.get(`cdn/stories/events/${slug}`, {
         version: 'published'
       });
       return response.data.story;
