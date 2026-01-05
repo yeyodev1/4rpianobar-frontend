@@ -9,13 +9,18 @@ const props = defineProps({
   eventName: {
     type: String,
     default: ''
+  },
+  guestCount: {
+    type: Number,
+    default: 1
   }
 });
 
 const emit = defineEmits(['close']);
 
 const whatsappUrl = computed(() => {
-  const text = `Hola, deseo reservar para el evento${props.eventName ? `: ${props.eventName}` : ''}.`;
+  const peopleText = props.guestCount > 1 ? ` para ${props.guestCount} personas` : ' para 1 persona';
+  const text = `Hola, deseo reservar${peopleText} para el evento${props.eventName ? `: ${props.eventName}` : ''}.`;
   return `https://wa.me/593979279877?text=${encodeURIComponent(text)}`;
 });
 
@@ -196,6 +201,7 @@ const close = () => {
     transform: translateY(20px) scale(0.95);
     opacity: 0;
   }
+
   to {
     transform: translateY(0) scale(1);
     opacity: 1;

@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Storyblok from '@/services/storyblok';
+import ReservationModal from '@/components/ui/ReservationModal.vue';
 import type { Event } from '@/types/event';
 
 const route = useRoute();
@@ -9,7 +10,7 @@ const router = useRouter();
 const event = ref<Event | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
-const paymentResponse = ref<any>(null);
+const showReservationModal = ref(false);
 
 // Reutilizamos la lógica de mapeo que ya probamos en EventCard, 
 // pero adaptada aquí ya que necesitamos la data para poblar la vista completa.
@@ -68,8 +69,8 @@ const fetchEventDetail = async () => {
 };
 
 const handleBuyTicket = () => {
-  alert('Función de compra de entradas no implementada.');
-}
+  showReservationModal.value = true;
+};
 
 onMounted(async () => {
   fetchEventDetail();
@@ -92,14 +93,7 @@ const goBack = () => {
     </div>
 
     <article v-else-if="event" class="event-content">
-      <div v-if="paymentResponse && paymentResponse.error" class="global-error-alert">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        <span>
-           Nota: Si ves errores de carga, es probable que la <strong>Referencia de Pago</strong> de prueba haya expirado. 
-           En producción, esta referencia debe ser única por transacción.
-        </span>
-      </div>
-
+      
       <header class="event-header" :style="{ backgroundImage: `url(${event.imageUrl})` }">
         <div class="event-header__overlay"></div>
         <div class="event-header__content">
@@ -136,29 +130,19 @@ const goBack = () => {
             <p>Asegura tu asistencia a este evento exclusivo.</p>
             
             <button v-if="event.price" @click="handleBuyTicket" class="btn-reserve btn-pay">
-              <i class="fa-regular fa-credit-card"></i> Pagar con Tarjeta
+              <i class="fa-regular fa-credit-card"></i> Pagar con Tarjeta / Reservar
             </button>
 
             <a href="https://wa.me/593979279877?text=Hola,%20deseo%20reservar%20para%20el%20evento" target="_blank" class="btn-reserve btn-whatsapp">
               <i class="fa-brands fa-whatsapp"></i> Reservar por WhatsApp
             </a>
 
-            <div v-if="paymentResponse" class="payment-response">
-              <h4>Resultado:</h4>
-              <div class="response-content">
-                <template v-if="paymentResponse.transaction">
-                  <p class="success"><i class="fa-solid fa-check-circle"></i> Transacción Exitosa</p>
-                  <p>ID: {{ paymentResponse.transaction.id }}</p>
-                </template>
-                <template v-else-if="paymentResponse.error">
-                  <p class="error"><i class="fa-solid fa-circle-exclamation"></i> Error</p>
-                  <p>{{ paymentResponse.error.description }}</p>
-                </template>
-                <template v-else>
-                  <pre>{{ JSON.stringify(paymentResponse, null, 2) }}</pre>
-                </template>
-              </div>
-            </div>
+            <!-- Modal para redirección a WhatsApp -->
+            <ReservationModal 
+              :is-open="showReservationModal" 
+              :event-name="event.title"
+              @close="showReservationModal = false"
+            />
           </div>
         </aside>
       </div>
@@ -182,18 +166,6 @@ const goBack = () => {
     gap: 1rem;
     color: colors.$text-light;
   }
-}
-
-.global-error-alert {
-  background: #fff3cd;
-  color: #856404;
-  padding: 1rem;
-  text-align: center;
-  border-bottom: 1px solid #ffeeba;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 .event-header {
@@ -343,23 +315,26 @@ const goBack = () => {
 }
 
 .btn-reserve {
-  display: inline-block;
-  background: colors.$white;
-  color: colors.$BRAND-PRIMARY;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
   padding: 1rem 2rem;
   border-radius: 4px;
   text-decoration: none;
   font-weight: bold;
-  width: 100%;
-  transition: transform 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  box-sizing: border-box;
   border: none;
   cursor: pointer;
   margin-bottom: 1rem;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 0.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  appearance: none;
+  /* Elimina estilos nativos del SO para botones */
+  text-align: center;
 
   &:hover {
     transform: translateY(-2px);
@@ -374,44 +349,6 @@ const goBack = () => {
   &.btn-whatsapp {
     background: #25D366;
     color: colors.$white;
-  }
-}
-
-.payment-response {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  text-align: left;
-  font-size: 0.9rem;
-
-  h4 {
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
-  }
-
-  .response-content {
-    background: colors.$white;
-    color: colors.$text-dark;
-    padding: 0.5rem;
-    border-radius: 4px;
-    overflow-x: auto;
-  }
-
-  .success {
-    color: #2e7d32;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .error {
-    color: #c62828;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
   }
 }
 
