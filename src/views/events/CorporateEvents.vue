@@ -309,7 +309,6 @@ const dinnerDetails = {
   background-color: $BRAND-GARNET;
   color: $white;
   min-height: 100vh;
-  padding-top: 80px; // Spacing for header
 }
 
 .hero-corporate {
