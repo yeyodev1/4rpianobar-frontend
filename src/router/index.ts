@@ -13,6 +13,7 @@ const router = createRouter({
     { path: '/menu', name: 'menu', component: MenuPage },
     { path: '/events', name: 'events', component: EventsPage },
     { path: '/events/:slug', name: 'event-detail', component: EventDetail },
+    { path: '/eventos-corporativos', name: 'corporate-events', component: () => import('@/views/events/CorporateEvents.vue') },
     { path: '/reservations', name: 'reservations', component: ReservationsPage },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundPage },
   ],
