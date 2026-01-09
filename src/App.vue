@@ -11,6 +11,7 @@ const route = useRoute()
 function gotoMenu() { closeMenu(); router.push({ name: 'menu' }) }
 function gotoEvents() { closeMenu(); router.push({ name: 'events' }) }
 function gotoHome() { closeMenu(); router.push({ name: 'home' }) }
+function gotoCorporateEvents() { closeMenu(); router.push({ name: 'corporate-events' }) }
 function gotoReservations() { closeMenu(); router.push({ name: 'reservations' }) }
 </script>
 
@@ -27,6 +28,7 @@ function gotoReservations() { closeMenu(); router.push({ name: 'reservations' })
         <button v-if="route.name !== 'home'" class="overlay__link" @click="gotoHome">HOME</button>
         <button v-if="route.name !== 'menu'" class="overlay__link" @click="gotoMenu">MENU</button>
         <button v-if="route.name !== 'events'" class="overlay__link" @click="gotoEvents">EVENTS</button>
+        <button v-if="route.name !== 'corporate-events'" class="overlay__link" @click="gotoCorporateEvents">CORPORATE</button>
         <button v-if="route.name !== 'reservations'" class="overlay__link" @click="gotoReservations">RESERVATIONS</button>
       </div>
     </div>
