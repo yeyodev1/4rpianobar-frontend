@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import paymentezService from '@/services/paymentez';
+import paymentAPI from '@/services/payment';
 
 const props = defineProps({
   userEmail: {
@@ -10,6 +11,18 @@ const props = defineProps({
   userId: {
     type: String,
     required: true
+  },
+  amount: {
+    type: Number,
+    required: true
+  },
+  description: {
+    type: String,
+    default: 'Reserva 4R Piano Bar'
+  },
+  userName: {
+    type: String,
+    default: ''
   }
 });
 
@@ -52,13 +65,35 @@ const initPaymentez = async () => {
   }
 };
 
-const handleResponse = (response: any) => {
-  isProcessing.value = false;
+const handleResponse = async (response: any) => {
   if (response.card && response.card.status === 'valid') {
-    emit('success', response.card);
+    try {
+      // Step 2: Process the charge on our backend
+      const chargeData = {
+        token: response.card.token,
+        amount: props.amount,
+        email: props.userEmail,
+        userId: props.userId,
+        description: props.description,
+        name: props.userName
+      };
+
+      const apiResponse = await paymentAPI.processCharge(chargeData);
+
+      isProcessing.value = false;
+      emit('success', apiResponse.transaction);
+    } catch (err: any) {
+      console.error('Error processing charge on backend:', err);
+      errorMessage.value = err.message || 'Error al procesar el pago en el servidor.';
+      isProcessing.value = false;
+      emit('error', err);
+    }
   } else if (response.error) {
+    isProcessing.value = false;
     errorMessage.value = response.error.type || 'Error en la tokenización';
     emit('error', response.error);
+  } else {
+    isProcessing.value = false;
   }
 };
 
