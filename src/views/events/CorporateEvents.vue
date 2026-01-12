@@ -2,11 +2,11 @@
 import { ref } from 'vue';
 
 const whatsappNumber = '593959739088';
-const whatsappMessage = 'Estimados 4R Piano Bar, solicito formalmente información y presupuesto para un evento corporativo de grupo (+9 personas). Quedo a la espera de su contacto profesional.';
+const whatsappMessage = 'Estimados 4R Piano Bar, solicito formalmente información y presupuesto para un evento corporativo (Experiencias exclusivas). Quedo a la espera de su contacto profesional.';
 const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
 const getWhatsAppPlanHref = (planName: string, category: string) => {
-  const message = `Deseo consultar la disponibilidad y términos del "${planName}" para la categoría de "${category}". Somos un grupo de más de 9 personas. Agradecería una respuesta profesional para proceder.`;
+  const message = `Deseo consultar la disponibilidad y términos del "${planName}" para la categoría de "${category}". Se trata de una experiencia exclusiva. Agradecería una respuesta profesional para proceder.`;
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 };
 
@@ -125,7 +125,7 @@ const dinnerDetails = {
     <section class="hero-corporate">
       <div class="hero-overlay">
         <h1 class="title">EVENTOS CORPORATIVOS</h1>
-        <p class="subtitle">EXPERIENCIAS EXCLUSIVAS PARA GRUPOS MAYORES A 9 PERSONAS</p>
+        <p class="subtitle">EXPERIENCIAS EXCLUSIVAS</p>
         <a :href="whatsappHref" target="_blank" class="cta-button">COTIZA TU EVENTO</a>
       </div>
     </section>
@@ -169,7 +169,7 @@ const dinnerDetails = {
                 <span class="price">{{ plan.price }}</span>
               </div>
               <ul class="plan-details">
-                <li><i class="fa-solid fa-users"></i> Aforo: {{ plan.aforo }} (Mayores a 9 personas)</li>
+                <li><i class="fa-solid fa-users"></i> Aforo: {{ plan.aforo }} (Experiencias exclusivas)</li>
                 <li><i class="fa-solid fa-clock"></i> Tiempo: {{ plan.tiempo }}</li>
                 <li><i class="fa-solid fa-calendar-day"></i> Horario: {{ plan.horario }}</li>
               </ul>
@@ -197,12 +197,14 @@ const dinnerDetails = {
               </ul>
             </div>
             <div class="menu-category">
+              <img src="@/assets/static/restaurant/gourmet-breakfast.png" alt="Brunch" class="category-img">
               <h3>OPCIONES DE BRUNCH</h3>
               <ul>
                 <li v-for="option in brunchOptions" :key="option">{{ option }}</li>
               </ul>
             </div>
             <div class="menu-category full-width">
+              <img src="@/assets/static/restaurant/elegant-dinner.png" alt="Almuerzos" class="category-img large">
               <h3>OPCIONES DE ALMUERZOS</h3>
               <div class="lunch-grid">
                 <div v-for="(lunch, index) in lunchOptions" :key="index" class="lunch-item">
