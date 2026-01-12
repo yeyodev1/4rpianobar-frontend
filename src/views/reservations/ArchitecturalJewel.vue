@@ -2,13 +2,13 @@
 type JewelImage = { src: string; alt: string }
 
 const header = 'UNA JOYA ARQUITECTÓNICA'
-const subtitle = 'COCINA LATINA REDEFINIDA'
+const subtitle = 'EXPERIENCIA EXCLUSIVA'
 const paragraph = 'Cada plato es una obra maestra que combina técnicas contemporáneas con sabores auténticos latinoamericanos.'
 
 const images: JewelImage[] = [
-  { src: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170812/Imagen_001_1_oyksp0.jpg', alt: 'Plato gourmet' },
+  { src: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169930/food3_fmy8ca.jpg', alt: 'Plato gourmet de pescado' },
   { src: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170856/Imagen_001_2_lltzgr.jpg', alt: 'Chef emplatando' },
-  { src: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170779/Foto_001_4_bii8jj.jpg', alt: 'Salmón a la parrilla' },
+  { src: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170027/Foto_001_ztlntr.jpg', alt: 'Música en vivo' },
 ]
 </script>
 
