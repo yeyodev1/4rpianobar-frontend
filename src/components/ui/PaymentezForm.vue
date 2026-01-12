@@ -16,6 +16,10 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  guestCount: {
+    type: Number,
+    default: 1
+  },
   description: {
     type: String,
     default: 'Reserva 4R Piano Bar'
@@ -32,6 +36,7 @@ const isLoading = ref(true);
 const isProcessing = ref(false);
 const errorMessage = ref('');
 const gateway = ref<any>(null);
+const customerName = ref(props.userName || '');
 
 const initPaymentez = async () => {
   try {
@@ -67,6 +72,12 @@ const initPaymentez = async () => {
 
 const handleResponse = async (response: any) => {
   if (response.card && response.card.status === 'valid') {
+    if (!customerName.value.trim()) {
+      errorMessage.value = 'Por favor, ingresa el nombre de la persona que asistirá.';
+      isProcessing.value = false;
+      return;
+    }
+
     try {
       // Step 2: Process the charge on our backend
       const chargeData = {
@@ -74,8 +85,8 @@ const handleResponse = async (response: any) => {
         amount: props.amount,
         email: props.userEmail,
         userId: props.userId,
-        description: props.description,
-        name: props.userName
+        description: `${props.description} (Entradas: ${props.guestCount})`,
+        name: customerName.value
       };
 
       const apiResponse = await paymentAPI.processCharge(chargeData);
@@ -103,6 +114,11 @@ const handleIncompleteForm = (message: string) => {
 };
 
 const handleTokenize = () => {
+  if (!customerName.value.trim()) {
+    errorMessage.value = 'Por favor, ingresa el nombre de la persona que asistirá.';
+    return;
+  }
+
   errorMessage.value = '';
   isProcessing.value = true;
   if (gateway.value) {
@@ -126,7 +142,21 @@ onBeforeUnmount(() => {
       <p>Cargando pasarela segura...</p>
     </div>
 
-    <div v-show="!isLoading" id="paymentez-container" class="paymentez-container"></div>
+    <div v-show="!isLoading" class="form-inputs">
+      <div class="input-group">
+        <label for="customer-name" class="input-label">Nombre de la persona que asistirá</label>
+        <input 
+          id="customer-name" 
+          v-model="customerName" 
+          type="text" 
+          placeholder="Escribe el nombre del asistente"
+          :disabled="isProcessing"
+          class="form-input"
+        />
+      </div>
+
+      <div id="paymentez-container" class="paymentez-container"></div>
+    </div>
 
     <div v-if="errorMessage" class="error-message">
       {{ errorMessage }}
@@ -138,8 +168,11 @@ onBeforeUnmount(() => {
         class="btn-submit" 
         :disabled="isProcessing"
       >
-        <span v-if="isProcessing">Procesando...</span>
-        <span v-else>Confirmar y Pagar</span>
+        <div v-if="isProcessing" class="btn-loader">
+          <div class="spinner-small"></div>
+          <span>Procesando...</span>
+        </div>
+        <span v-else>Pagar ${{ amount }}</span>
       </button>
       
       <button 
@@ -160,7 +193,8 @@ onBeforeUnmount(() => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.2rem;
+  text-align: left;
 }
 
 .paymentez-loader {
@@ -173,14 +207,54 @@ onBeforeUnmount(() => {
   color: colors.$text-light;
 }
 
+.form-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .input-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: colors.$text-dark;
+  }
+
+  .form-input {
+    padding: 0.8rem 1rem;
+    border: 1px solid colors.$border-light;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    background-color: white;
+
+    color: #000000;
+
+    &:focus {
+      outline: none;
+      border-color: colors.$BRAND-PRIMARY;
+      box-shadow: 0 0 0 2px rgba(colors.$BRAND-PRIMARY, 0.1);
+    }
+
+    &:disabled {
+      background-color: colors.$background-light;
+      cursor: not-allowed;
+    }
+  }
+}
+
 .paymentez-container {
   min-height: 200px;
   width: 100%;
 
-  /* Overriding potential internal SDK styles if necessary */
   :deep(.paymentez-input) {
-    border-radius: 4px;
-    border: 1px solid colors.$border-light;
+    border-radius: 8px !important;
+    border: 1px solid colors.$border-light !important;
+    padding: 10px !important;
   }
 }
 
@@ -188,43 +262,60 @@ onBeforeUnmount(() => {
   padding: 0.75rem;
   background-color: rgba(colors.$error, 0.1);
   color: colors.$error;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 0.9rem;
   text-align: center;
+  font-weight: 500;
 }
 
 .form-actions {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
 }
 
 .btn-submit {
   background-color: colors.$BRAND-PRIMARY;
   color: white;
   border: none;
-  padding: 1rem;
-  border-radius: 4px;
+  padding: 1.1rem;
+  border-radius: 8px;
   font-weight: bold;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(colors.$BRAND-PRIMARY, 0.2);
 
   &:hover:not(:disabled) {
-    background-color: lighten(colors.$BRAND-PRIMARY, 10%);
+    background-color: lighten(colors.$BRAND-PRIMARY, 5%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(colors.$BRAND-PRIMARY, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
   }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.7;
     cursor: not-allowed;
   }
+}
+
+.btn-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
 }
 
 .btn-cancel {
   background: transparent;
   border: 1px solid colors.$border-light;
   color: colors.$text-light;
-  padding: 0.75rem;
-  border-radius: 4px;
+  padding: 0.8rem;
+  border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s;
@@ -236,10 +327,19 @@ onBeforeUnmount(() => {
 }
 
 .spinner {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   border: 3px solid colors.$gray-200;
   border-top-color: colors.$BRAND-PRIMARY;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-small {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

@@ -179,6 +179,8 @@ const goBack = () => {
             <ReservationModal 
               :is-open="showReservationModal" 
               :event-name="event.title"
+              :event-date="event.date"
+              :event-time="event.time"
               :guest-count="guestCount"
               :initial-mode="reservationMode"
               :event-price="numericPrice"
