@@ -2,7 +2,7 @@
 const title = 'UNA NUEVA DIMENSIÓN EN EXCELENCIA CULINARIA'
 const body = 'Sumérgete en una atmósfera única donde los ritmos latinos cobran vida con DJ en vivo y percusionistas que crean la banda sonora perfecta para tu experiencia gastronómica.'
 
-const facadeImage = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170812/Imagen_001_1_oyksp0.jpg'
+const facadeImage = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169855/food2_bhirci.jpg'
 const ambienceImage = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169852/food_erplqo.jpg'
 
 const whatsappNumber = '593979279877'
