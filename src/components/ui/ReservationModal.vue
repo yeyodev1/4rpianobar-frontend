@@ -18,12 +18,20 @@ const props = defineProps({
   initialMode: {
     type: String,
     default: 'whatsapp' // 'whatsapp' or 'paymentez'
+  },
+  eventPrice: {
+    type: Number,
+    default: 0
   }
 });
 
 const emit = defineEmits(['close']);
 
 const currentMode = ref(props.initialMode);
+const paymentSuccess = ref(false);
+const transactionData = ref<any>(null);
+
+const totalAmount = computed(() => props.eventPrice * props.guestCount);
 
 watch(() => props.isOpen, (newVal) => {
   if (newVal) {
@@ -32,20 +40,16 @@ watch(() => props.isOpen, (newVal) => {
   }
 });
 
-const paymentSuccess = ref(false);
-const cardInfo = ref(null);
-
 const whatsappUrl = computed(() => {
   const peopleText = props.guestCount > 1 ? ` para ${props.guestCount} personas` : ' para 1 persona';
   const text = `Hola, deseo reservar${peopleText} para el evento${props.eventName ? `: ${props.eventName}` : ''}.`;
   return `https://wa.me/593979279877?text=${encodeURIComponent(text)}`;
 });
 
-const handlePaymentSuccess = (response: any) => {
+const handlePaymentSuccess = (transaction: any) => {
   paymentSuccess.value = true;
-  cardInfo.value = response;
-  // Here we would typically call our backend to complete the charge
-  console.log('Payment token received:', response.token);
+  transactionData.value = transaction;
+  console.log('Payment transaction complete:', transaction.id);
 };
 
 const close = () => {
@@ -70,6 +74,7 @@ const close = () => {
               </div>
               <h2 class="modal-title">¡Reserva Exitosa!</h2>
               <p>Hemos recibido tu pago correctamente. Pronto recibirás un correo con los detalles de tu reserva para <strong>{{ eventName }}</strong>.</p>
+              <p v-if="transactionData" class="transaction-id">ID de Transacción: <span>{{ transactionData.id }}</span></p>
               <button class="btn-primary" @click="close">Cerrar</button>
             </div>
 
@@ -107,8 +112,10 @@ const close = () => {
               
               <div class="modal-body modal-body--form">
                 <PaymentezForm 
-                  user-id="user_123" 
-                  user-email="cliente@example.com"
+                  :user-id="'user_' + Math.floor(Math.random() * 1000)" 
+                  :user-email="'cliente' + Math.floor(Math.random() * 1000) + '@example.com'"
+                  :amount="totalAmount"
+                  :description="'Reserva para: ' + eventName"
                   @success="handlePaymentSuccess"
                   @cancel="currentMode = 'whatsapp'"
                 />
