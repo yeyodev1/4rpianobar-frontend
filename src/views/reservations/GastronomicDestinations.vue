@@ -6,7 +6,7 @@ const title = 'DESTINO GASTRONÓMICO DE EXCELENCIA CON GRUPO 4R'
 const destinations: Destination[] = [
   { name: 'NOCHES DE PIANO BAR', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170856/Imagen_001_2_lltzgr.jpg' },
   { name: 'ENTRADA EMBLEMÁTICA', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170812/Imagen_001_1_oyksp0.jpg' },
-  { name: 'COCINA ITALIANA CLÁSICA', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170779/Foto_001_4_bii8jj.jpg' },
+  { name: 'SABORES LATINOS AUTÉNTICOS', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170779/Foto_001_4_bii8jj.jpg' },
   { name: 'EXPERIENCIA LATINA CONTEMPORÁNEA', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171006/007_Julio_yovh85.jpg' },
 ]
 
@@ -20,7 +20,7 @@ function whatsappHrefFor(name: string) {
 <template>
   <section class="destinations">
     <h2 class="destinations__title">{{ title }}</h2>
-    <p class="destinations__tagline">GUAYAQUIL · ECUADOR — EXPERIENCIA PARA VIAJEROS INTERNACIONALES</p>
+    <p class="destinations__tagline">GUAYAQUIL · ECUADOR — PASIÓN POR LA EXCELENCIA</p>
     <div class="destinations__grid">
       <article v-for="d in destinations" :key="d.name" class="card">
         <figure class="card__media">
