@@ -1,9 +1,9 @@
 <script setup lang="ts">
 type DisplayImage = { src: string; alt: string }
 
-const eyebrow = 'MEJORES RESTAURANTES EN CIUDAD'
-const title = 'LA EXPERIENCIA GASTRONÓMICA LATINA DEFINITIVA'
-const body = 'Descubre una experiencia gastronómica única donde la arquitectura vanguardista se fusiona con la excelencia culinaria, creando momentos inolvidables en el corazón de la ciudad.'
+const eyebrow = 'UNA NOCHE ÚNICA'
+const title = 'TRANSFORMAMOS TUS MOMENTOS EN RECUERDOS'
+const body = 'Descubre una experiencia donde la música, el sabor y la elegancia se encuentran para crear la atmósfera perfecta que estabas buscando.'
 
 const images: DisplayImage[] = [
   { src: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171204/Foto_001_5_qtz4ad.jpg', alt: 'Cena entre amigos con bengalas' },
