@@ -13,19 +13,90 @@ import FooterSection from './FooterSection.vue'
 
   <main>
     <section class="intro">
-      <h2>SIENTE LA FIESTA, VIVE LA EXPERIENCIA</h2>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga sint expedita facilis optio odit, velit blanditiis autem labore laborum similique sit quaerat eum natus temporibus accusamus, voluptatum dicta delectus modi?
-        Doloribus aut vitae repellat id odit praesentium rem hic accusantium amet, earum ipsa nostrum repudiandae eius, facere cum? Aliquam culpa maxime laboriosam omnis maiores asperiores modi tempore aliquid quam saepe?
-        Doloribus nam vitae eveniet dignissimos facilis a iste consequatur vero veniam sed esse, aliquam blanditiis impedit tenetur fugit hic? Eaque, iste? Consequuntur, id nihil. Omnis quo impedit rem quam itaque!
-      </p>
+      <div class="intro__group">
+        <h2>¿QUÉ ES 4R?</h2>
+        <p>
+          4R es ese lugar al que vas cuando no quieres lo de siempre. <br>
+          Cuando no te provoca ni la disco, ni el bar ruidoso, ni quedarte en casa. <br>
+          Cuando quieres música en vivo, algo que se sienta especial, un trago bien hecho y una noche que tenga historia.
+        </p>
+        <p>
+          Aquí hay piano. Hay voces en vivo. Hay cocteles. Hay gente celebrando cosas pequeñas y grandes. Y todo pasa muy cerca de ti.
+        </p>
+      </div>
+
+      <div class="intro__group">
+        <h2>LA IDEA DETRÁS DE 4R</h2>
+        <p>
+          No necesitas una excusa para venir. No necesitas que sea viernes. No necesitas que sea tu cumpleaños.
+        </p>
+        <p>
+          Si quieres salir, esa ya es una razón. Y si eliges 4R, es una buena. Por eso aquí decimos: <strong>Siempre tienes la razón.</strong>
+        </p>
+      </div>
     </section>
 
     <FeaturedDish />
 
     <LocationsSection />
 
+    <section class="night-phases">
+      <div class="container">
+        <h2 class="section-title">CÓMO CAMBIA LA NOCHE</h2>
+        <div class="phases-grid">
+          <div class="phase-card">
+            <h3>Temprano</h3>
+            <p>Para conversar, empezar tranquilo, mirarse de cerca.</p>
+          </div>
+          <div class="phase-card">
+            <h3>Más tarde</h3>
+            <p>Para el show, el piano, los coros y los brindis.</p>
+          </div>
+          <div class="phase-card">
+            <h3>Muy tarde</h3>
+            <p>Para quedarte un rato más… aunque ya habías dicho que te ibas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <AtmosphereSection/>
+
+    <section class="reasons">
+      <div class="container">
+        <h2>PARA QUÉ VENIR</h2>
+        <p>A 4R vienes:</p>
+        <ul class="reasons-list">
+          <li>A celebrar algo</li>
+          <li>A olvidar algo</li>
+          <li>A impresionar a alguien</li>
+          <li>A cantar</li>
+          <li>A brindar</li>
+          <li>A salir sin motivo</li>
+        </ul>
+        <p class="reasons-footer">Todas son buenas razones.</p>
+      </div>
+    </section>
+
+    <section class="events-cta">
+      <div class="container">
+        <h2>EVENTOS</h2>
+        <p>Cumpleaños, cenas, despedidas, reuniones, celebraciones.</p>
+        <p>Si quieres que tu noche se sienta distinta, 4R es un buen lugar para hacerlo.</p>
+        <a href="https://wa.me/593979279877?text=Quiero%20preguntar%20por%20eventos" target="_blank" class="cta-btn">
+          PREGUNTAR POR EVENTOS
+        </a>
+      </div>
+    </section>
+
+    <section class="booking-section" id="reservas">
+      <div class="container">
+        <h2>RESERVAS</h2>
+        <p>Las mesas no son infinitas. La noche sí, pero el espacio no.</p>
+        <p>Si quieres asegurarte tu lugar: Reserva por WhatsApp o Instagram.</p>
+        <a href="https://wa.me/593979279877" target="_blank" class="cta-btn">RESERVAR AHORA</a>
+      </div>
+    </section>
 
     <FoodGallery />
   </main>
@@ -34,55 +105,147 @@ import FooterSection from './FooterSection.vue'
 </template>
 
 <style lang="scss" scoped>
+@use 'sass:color';
+
 main {
   display: grid;
   gap: 48px;
 }
 
 .intro {
-  padding: 16px 20px;
+  padding: 48px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
 }
 
-.intro h2 {
+.intro__group h2 {
   font-family: $font-principal;
   color: $BRAND-BURGUNDY;
   font-size: 1.6rem;
   line-height: 1.2;
+  margin-bottom: 16px;
+  text-transform: uppercase;
 }
 
-.intro p {
+.intro__group p {
   color: $gray-300;
   font-size: 0.95rem;
   line-height: 1.7;
   max-width: 60ch;
   width: 100%;
-  margin: 12px auto 0;
-  overflow-wrap: anywhere;
-  hyphens: auto;
+  margin: 12px 0;
 }
 
+.section-title {
+  font-family: $font-principal;
+  color: $accent-gold;
+  text-align: center;
+  margin-bottom: 32px;
+  font-size: 1.8rem;
+}
 
-/* gallery styles moved to GalleryGrid.vue */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.night-phases,
+.reasons,
+.events-cta,
+.booking-section {
+  padding: 64px 0;
+  text-align: center;
+}
+
+.phases-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.phase-card {
+  background: rgba($white, 0.05);
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid rgba($accent-gold, 0.2);
+}
+
+.phase-card h3 {
+  color: $accent-gold;
+  margin-bottom: 12px;
+  font-family: $font-principal;
+}
+
+.reasons h2,
+.events-cta h2,
+.booking-section h2 {
+  font-family: $font-principal;
+  color: $accent-gold;
+  font-size: 1.8rem;
+  margin-bottom: 24px;
+}
+
+.reasons-list {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  display: grid;
+  gap: 12px;
+}
+
+.reasons-list li {
+  color: $white;
+  font-size: 1.1rem;
+
+  &::before {
+    content: "•";
+    color: $accent-gold;
+    margin-right: 12px;
+  }
+}
+
+.reasons-footer {
+  font-weight: 600;
+  color: $accent-gold;
+}
+
+.cta-btn {
+  display: inline-block;
+  margin-top: 24px;
+  padding: 14px 32px;
+  background: $BRAND-BURGUNDY;
+  color: $white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.cta-btn:hover {
+  background: color.scale($BRAND-BURGUNDY, $lightness: 10%);
+}
 
 @media (min-width: 768px) {
-  .content h2 {
-    font-size: 48px;
-  }
-
-
-
   .intro {
     text-align: center;
-    padding: 24px;
+    padding: 80px 24px;
+    align-items: center;
   }
 
-  .intro h2 {
-    font-size: 2.25rem;
+  .intro__group p {
+    margin: 12px auto;
   }
 
-  .intro p {
-    font-size: 1.05rem;
-    max-width: 70ch;
+  .phases-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .reasons-list {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 600px;
+    margin: 32px auto;
+    text-align: left;
   }
 }
 </style>
