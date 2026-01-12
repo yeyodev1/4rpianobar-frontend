@@ -1,28 +1,33 @@
 <script setup lang="ts">
 
 const locations = [
-  { id: 1, name: 'PIANO LIVE', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170027/Foto_001_ztlntr.jpg' },
-  { id: 2, name: 'MIXOLOGÍA DE AUTOR', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169855/food2_bhirci.jpg' },
-  { id: 3, name: 'CENA DEGUSTACIÓN', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169930/food3_fmy8ca.jpg' },
-  { id: 4, name: 'EVENTOS CORPORATIVOS', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171204/Foto_001_5_qtz4ad.jpg' },
+  { id: 1, name: 'PIANO EN VIVO', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170027/Foto_001_ztlntr.jpg' },
+  { id: 2, name: 'CANTANTES', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171485/Imagen_002_1_nkcu4w.jpg' },
+  { id: 3, name: 'TRIBUTOS', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169930/food3_fmy8ca.jpg' },
+  { id: 4, name: 'DJs & FIESTA', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171204/Foto_001_5_qtz4ad.jpg' },
 ]
 </script>
 
 <template>
-  <section class="locations">
-    <h2 class="locations__title">NUESTROS EVENTOS</h2>
+  <section class="locations" id="cartelera">
+    <h2 class="locations__title">MÚSICA & SHOW</h2>
+    <div class="locations__intro">
+      <p>Aquí no pones una playlist y listo. Cada noche tiene su propia energía.</p>
+    </div>
     <div class="cards">
       <div
         v-for="loc in locations"
         :key="loc.id"
         class="card"
-        :style="{ backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('${loc.image}')` }"
+        :style="{ backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${loc.image}')` }"
       >
         <div class="card__label">{{ loc.name }}</div>
       </div>
     </div>
+    <div class="locations__footer">
+      <p>Algunas son para cantar. Otras para bailar. Otras para mirar a alguien y brindar sin decir nada.</p>
+    </div>
   </section>
-  
 </template>
 
 <style lang="scss" scoped>
@@ -38,6 +43,20 @@ const locations = [
   letter-spacing: 2px;
   margin: 0 0 16px;
   font-size: 20px;
+}
+
+.locations__intro,
+.locations__footer {
+  text-align: center;
+  color: $gray-300;
+  max-width: 60ch;
+  margin: 16px auto;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.locations__footer {
+  margin-top: 32px;
 }
 
 .cards {
