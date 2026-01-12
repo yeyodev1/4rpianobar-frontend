@@ -11,7 +11,7 @@ const services = [
   { icon: 'fa-square-parking', text: 'Estacionamiento Privado' },
 ]
 
-const corporateImage = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171204/Foto_001_5_qtz4ad.jpg'
+const corporateImage = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171485/Imagen_002_1_nkcu4w.jpg'
 
 const mapUrl = 'https://www.google.com/maps/place/4R+Piano+Bar/@-2.1402047,-79.8879874,15z/data=!4m6!3m5!1s0x902d6d6036bace83:0xcaf52612d9eac4a9!8m2!3d-2.1384666!4d-79.8654149!16s%2Fg%2F11ty26g7n1?entry=ttu&g_ep=EgoyMDI1MTEyMy4xIKXMDSoASAFQAw%3D%3D.'
 const openMap = () => window.open(mapUrl, '_blank')
