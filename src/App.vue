@@ -25,11 +25,11 @@ function gotoReservations() { closeMenu(); router.push({ name: 'reservations' })
         <i class="fa-solid fa-xmark"></i>
       </button>
       <div class="content">
-        <button v-if="route.name !== 'home'" class="overlay__link" @click="gotoHome">HOME</button>
-        <button v-if="route.name !== 'menu'" class="overlay__link" @click="gotoMenu">MENU</button>
-        <button v-if="route.name !== 'events'" class="overlay__link" @click="gotoEvents">EVENTS</button>
-        <button v-if="route.name !== 'corporate-events'" class="overlay__link" @click="gotoCorporateEvents">CORPORATE</button>
-        <button v-if="route.name !== 'reservations'" class="overlay__link" @click="gotoReservations">RESERVATIONS</button>
+        <button v-if="route.name !== 'home'" class="overlay__link" @click="gotoHome">INICIO</button>
+        <button v-if="route.name !== 'menu'" class="overlay__link" @click="gotoMenu">MENÚ</button>
+        <button v-if="route.name !== 'events'" class="overlay__link" @click="gotoEvents">EVENTOS</button>
+        <button v-if="route.name !== 'corporate-events'" class="overlay__link" @click="gotoCorporateEvents">CORPORATIVO</button>
+        <button v-if="route.name !== 'reservations'" class="overlay__link" @click="gotoReservations">RESERVAS</button>
       </div>
     </div>
   </transition>
