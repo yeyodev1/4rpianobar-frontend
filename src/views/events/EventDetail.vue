@@ -11,6 +11,7 @@ const event = ref<Event | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const showReservationModal = ref(false);
+const reservationMode = ref<'whatsapp' | 'paymentez'>('whatsapp');
 const guestCount = ref(2);
 
 const incrementGuests = () => {
@@ -84,6 +85,12 @@ const fetchEventDetail = async () => {
 };
 
 const handleBuyTicket = () => {
+  reservationMode.value = 'paymentez';
+  showReservationModal.value = true;
+};
+
+const handleWhatsappReservation = () => {
+  reservationMode.value = 'whatsapp';
   showReservationModal.value = true;
 };
 
@@ -157,15 +164,16 @@ const goBack = () => {
               <i class="fa-regular fa-credit-card"></i> Pagar con Tarjeta / Reservar
             </button>
 
-            <a :href="whatsappDirectUrl" target="_blank" class="btn-reserve btn-whatsapp">
+            <button @click="handleWhatsappReservation" class="btn-reserve btn-whatsapp">
               <i class="fa-brands fa-whatsapp"></i> Reservar por WhatsApp
-            </a>
+            </button>
 
             <!-- Modal para redirección a WhatsApp -->
             <ReservationModal 
               :is-open="showReservationModal" 
               :event-name="event.title"
               :guest-count="guestCount"
+              :initial-mode="reservationMode"
               @close="showReservationModal = false"
             />
           </div>
