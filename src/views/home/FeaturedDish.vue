@@ -4,18 +4,18 @@
 <template>
   <article class="card">
     <div class="card__image-container">
-      <img src="https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169852/food_erplqo.jpg" alt="Plato destacado" class="card__image" />
+      <img src="https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169855/food2_bhirci.jpg" alt="Cocteles en 4R" class="card__image" />
     </div>
     <div class="card__content">
-      <h3 class="card__title">SABOREA LA PASIÓN DE LATINOAMÉRICA EN CADA BOCADO</h3>
+      <h3 class="card__title">LOS TRAGOS</h3>
       <p class="card__text">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus porta, nibh quis
-        interdum ultricies, urna velit placerat lectus, at cursus orci mauris nec tortor. Sed
-        posuere, sapien vitae dictum tristique, nibh nisl fermentum elit, quis posuere nisl
-        lectus non massa.
+        Los tragos no son solo para tomar. Son parte del show. Hay clásicos bien hechos. Hay cocteles que salen humeando.
       </p>
-      <RouterLink to="/menu" class="card__link" aria-label="Ver menú completo">
-        Menú completo <i class="fa-solid fa-arrow-right"></i>
+      <p class="card__text">
+        Hay otros que llegan encendidos, perfumados, contados. Te los sirven, te los explican, los ves nacer. Y sí… saben tan bien como se ven.
+      </p>
+      <RouterLink to="/menu" class="card__link" aria-label="Ver carta de tragos">
+        Ver carta <i class="fa-solid fa-arrow-right"></i>
       </RouterLink>
     </div>
   </article>
