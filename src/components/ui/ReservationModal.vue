@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import PaymentezForm from './PaymentezForm.vue';
 
 const props = defineProps({
@@ -388,6 +388,34 @@ onMounted(() => {
   .ticket-status-subtitle {
     color: colors.$text-light;
     font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.capture-reminder {
+  background-color: rgba(colors.$BRAND-PRIMARY, 0.08);
+  border: 1px dashed colors.$BRAND-PRIMARY;
+  padding: 1rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+  margin-top: 1rem;
+
+  i {
+    font-size: 1.5rem;
+    color: colors.$BRAND-PRIMARY;
+  }
+
+  span {
+    font-size: 0.85rem;
+    color: colors.$text-dark;
+    line-height: 1.4;
+
+    strong {
+      color: colors.$BRAND-PRIMARY;
+    }
   }
 }
 

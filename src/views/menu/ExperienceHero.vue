@@ -9,7 +9,6 @@ const props = defineProps({
     <div class="experience-hero__overlay">
       <div class="experience-hero__content">
         <h1 class="experience-hero__title">EL MUNDO DE 4R PIANO BAR</h1>
-        <p class="experience-hero__subtitle">POR GRUPO 4R</p>
         <a
           class="experience-hero__cta"
           href="https://wa.me/?text=Quiero%20reservar%20en%204R%20Piano%20Bar"
