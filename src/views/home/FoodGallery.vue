@@ -59,7 +59,10 @@ onUnmounted(() => {
 <template>
   <section class="food-gallery">
     <div class="food-gallery__container">
-      <h2 class="food-gallery__title">DEVOCIÓN POR LA GRAN COMIDA</h2>
+      <h2 class="food-gallery__title">GALERÍA</h2>
+      <div class="food-gallery__description">
+        <p>Aquí no mostramos platos. Mostramos noches. Copas en el aire. Gente riendo. Luces bajas. Manos en el piano. Momentos que pasan una sola vez.</p>
+      </div>
 
       <div ref="track" class="food-gallery__track">
         <figure
@@ -108,6 +111,15 @@ onUnmounted(() => {
     font-size: 1.25rem;
     line-height: 1.2;
     margin-bottom: 1.5rem;
+  }
+
+  &__description {
+    text-align: center;
+    color: $gray-300;
+    max-width: 70ch;
+    margin: 0 auto 2rem;
+    font-size: 1rem;
+    line-height: 1.6;
   }
 
   &__track {
