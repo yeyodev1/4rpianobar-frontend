@@ -9,14 +9,18 @@ const images: AtmosphereImage[] = [
 
 <template>
   <section class="atmosphere">
-    <h2 class="atmosphere__title">CENA, BAILA, DISFRUTA: AL ESTILO LATINO</h2>
+    <h2 class="atmosphere__title">LA EXPERIENCIA</h2>
+    <div class="atmosphere__description">
+      <p>La noche no entra golpeando. Empieza suave. Llegas, te sientas, pides algo de tomar. Suena el piano. Alguien canta.</p>
+      <p>Luego el ambiente cambia. Las mesas se acercan. Las voces se sueltan. Los brindis empiezan.</p>
+      <p>Y cuando te das cuenta, ya no estás saliendo… estás dentro de la noche. <strong>Eso es 4R.</strong></p>
+    </div>
     <div class="atmosphere__grid">
       <figure v-for="(img, idx) in images" :key="idx" class="atmosphere__card">
         <img :src="img.src" :alt="img.alt" class="atmosphere__image" loading="lazy" />
       </figure>
     </div>
   </section>
-  
 </template>
 
 <style lang="scss" scoped>
@@ -36,6 +40,21 @@ const images: AtmosphereImage[] = [
     font-size: 1.25rem;
     line-height: 1.2;
     margin-bottom: 1.5rem;
+  }
+
+  &__description {
+    text-align: center;
+    color: $gray-300;
+    max-width: 70ch;
+    margin: 0 auto 2rem;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    display: grid;
+    gap: 1rem;
+
+    strong {
+      color: $accent-gold;
+    }
   }
 
   &__grid {
