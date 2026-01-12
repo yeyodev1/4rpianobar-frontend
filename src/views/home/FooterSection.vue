@@ -18,6 +18,15 @@ function sendToWhatsapp() {
 
 <template>
   <footer class="footer">
+    <section class="footer__final-phrase">
+      <div class="footer__container">
+        <p>No es un bar.</p>
+        <p>No es una discoteca.</p>
+        <p>No es un restaurante.</p>
+        <p class="impact">Es el lugar donde decidiste salir y te fue mejor de lo que esperabas.</p>
+      </div>
+    </section>
+
     <section v-if="props.showNewsletter" class="footer__newsletter">
       <div class="footer__container">
         <h2 class="footer__title">NEWSLETTER</h2>
@@ -72,6 +81,25 @@ function sendToWhatsapp() {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+  }
+
+  &__final-phrase {
+    background: $text-dark;
+    padding: 60px 20px;
+    text-align: center;
+    color: $gray-300;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    border-top: 1px solid rgba($accent-gold, 0.1);
+
+    .impact {
+      color: $accent-gold;
+      font-family: $font-principal;
+      font-size: 1.5rem;
+      margin-top: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
   }
 
   &__newsletter {
