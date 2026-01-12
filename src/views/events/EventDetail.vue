@@ -84,6 +84,13 @@ const fetchEventDetail = async () => {
   }
 };
 
+const numericPrice = computed(() => {
+  if (!event.value?.price) return 0;
+  // Extract number from string like "$15" or "$ 15.00"
+  const price = event.value.price.replace(/[^\d.]/g, '');
+  return parseFloat(price) || 0;
+});
+
 const handleBuyTicket = () => {
   reservationMode.value = 'paymentez';
   showReservationModal.value = true;
@@ -174,6 +181,7 @@ const goBack = () => {
               :event-name="event.title"
               :guest-count="guestCount"
               :initial-mode="reservationMode"
+              :event-price="numericPrice"
               @close="showReservationModal = false"
             />
           </div>
