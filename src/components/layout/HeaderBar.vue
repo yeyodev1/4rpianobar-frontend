@@ -18,8 +18,7 @@ const phoneLink = props.phoneHref || whatsappHref
         <a :href="whatsappHref" target="_blank" rel="noopener" class="reserve">RESERVAR AHORA</a>
       </div>
       <div class="center">
-        <div class="brand">4R PIANO BAR</div>
-        <div class="subtitle">COCINA LATINOAMERICANA</div>
+        <img src="@/assets/static/logo-light.png" alt="4R Piano Bar" class="logo-horizontal" />
       </div>
       <div class="right">
         <a :href="phoneLink" target="_blank" rel="noopener" aria-label="WhatsApp" class="icon">
@@ -86,16 +85,10 @@ const phoneLink = props.phoneHref || whatsappHref
   text-decoration: none;
 }
 
-.brand {
-  font-family: $font-principal;
-  letter-spacing: 2px;
-  font-size: 16px;
-  color: $white;
-}
-
-.subtitle {
-  font-size: 10px;
-  letter-spacing: 2px;
+.logo-horizontal {
+  height: 40px;
+  width: auto;
+  display: block;
 }
 
 .icon {
@@ -117,12 +110,8 @@ const phoneLink = props.phoneHref || whatsappHref
     max-width: 1280px;
   }
 
-  .brand {
-    font-size: 18px;
-  }
-
-  .subtitle {
-    font-size: 12px;
+  .logo-horizontal {
+    height: 50px;
   }
 }
 </style>
