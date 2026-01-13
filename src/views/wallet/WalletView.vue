@@ -3,19 +3,32 @@ import { ref } from 'vue';
 import PaymentVerification from '@/components/payment/PaymentVerification.vue';
 import PaymentCardList from '@/components/payment/PaymentCardList.vue';
 import PaymentNewCard from '@/components/payment/PaymentNewCard.vue';
+import PaymentTransactionList from '@/components/payment/PaymentTransactionList.vue';
 import FooterSection from '@/views/home/FooterSection.vue';
 
 const step = ref('identifying'); // 'identifying' -> 'managing' -> 'adding'
 const userEmail = ref('');
 const userName = ref('');
 const userId = ref('');
+const verificationCode = ref('');
+const errorMessage = ref('');
 
-const handleVerified = (data: { email: string, code: string }) => {
+const handleVerified = (data: { email: string, code: string, userId?: string | null }) => {
+  errorMessage.value = '';
   userEmail.value = data.email;
-  // In a real app, the verification would return the userId.
-  // We'll use a hash or just the email for now if the backend supports it.
-  userId.value = data.email.replace(/[@.]/g, '_'); 
+  verificationCode.value = data.code;
+  if (data.userId) {
+    userId.value = data.userId;
+  } else {
+    // Generate temporary or hash
+    userId.value = data.email.replace(/[@.]/g, '_');
+  }
   step.value = 'managing';
+};
+
+const handleComponentError = (msg: string) => {
+  errorMessage.value = msg;
+  step.value = 'identifying';
 };
 </script>
 
@@ -38,6 +51,7 @@ const handleVerified = (data: { email: string, code: string }) => {
             <PaymentVerification 
               v-model:email="userEmail"
               v-model:name="userName"
+              :error="errorMessage"
               @verified="handleVerified"
             />
           </div>
@@ -58,15 +72,21 @@ const handleVerified = (data: { email: string, code: string }) => {
 
             <PaymentCardList 
               :user-id="userId"
+              :email="userEmail"
+              :verification-code="verificationCode"
               @add-new="step = 'adding'"
+              @error="handleComponentError"
             />
 
             <hr />
 
             <div class="transactions-section">
-              <h3>Historial de Transacciones</h3>
-              <p class="empty-state">No se encontraron transacciones recientes.</p>
-              <!-- En un entorno real, aquí listaríamos models.transactions de ese email -->
+              <PaymentTransactionList 
+                :user-id="userId" 
+                :email="userEmail"
+                :verification-code="verificationCode"
+                @error="handleComponentError"
+              />
             </div>
           </div>
 
@@ -138,7 +158,7 @@ const handleVerified = (data: { email: string, code: string }) => {
   color: colors.$BRAND-PRIMARY;
   font-size: 0.9rem;
   margin-bottom: 1.5rem;
-  
+
   i {
     font-size: 1.5rem;
   }
@@ -165,7 +185,7 @@ const handleVerified = (data: { email: string, code: string }) => {
   .details {
     display: flex;
     flex-direction: column;
-    
+
     .email {
       font-weight: 600;
       color: colors.$text-dark;
@@ -208,11 +228,11 @@ hr {
   .container {
     padding: 2rem 1rem;
   }
-  
+
   .wallet-header h1 {
     font-size: 2rem;
   }
-  
+
   .card {
     padding: 1.5rem;
   }
