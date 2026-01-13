@@ -48,13 +48,18 @@ class PaymentAPI extends APIBase {
     return response.data;
   }
 
-  async listCards(userId: string): Promise<CardResponse> {
-    const response = await this.get<CardResponse>(`payment/paymentez/cards/${userId}`);
+  async listCards(userId: string, email: string, code: string): Promise<CardResponse> {
+    const response = await this.get<CardResponse>(`payment/paymentez/cards/${userId}?email=${email}&code=${code}`);
     return response.data;
   }
 
-  async deleteCard(userId: string, token: string): Promise<any> {
-    const response = await this.delete(`payment/paymentez/cards/${userId}/${token}`);
+  async listUserTransactions(userId: string, email: string, code: string): Promise<any> {
+    const response = await this.get(`payment/paymentez/transactions/${userId}?email=${email}&code=${code}`);
+    return response.data;
+  }
+
+  async deleteCard(userId: string, token: string, email: string, code: string): Promise<any> {
+    const response = await this.delete(`payment/paymentez/cards/${userId}/${token}?email=${email}&code=${code}`);
     return response.data;
   }
 
