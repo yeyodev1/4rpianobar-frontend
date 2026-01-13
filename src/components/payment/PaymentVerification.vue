@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import paymentAPI from '@/services/payment';
 
 const props = defineProps({
@@ -8,6 +8,10 @@ const props = defineProps({
     default: ''
   },
   name: {
+    type: String,
+    default: ''
+  },
+  error: {
     type: String,
     default: ''
   }
@@ -20,24 +24,52 @@ const internalEmail = ref(props.email);
 const internalName = ref(props.name);
 const code = ref('');
 const isLoading = ref(false);
-const errorMessage = ref('');
+
+const translateError = (msg: string) => {
+  if (!msg) return '';
+  const lowerMsg = msg.toLowerCase();
+  if (lowerMsg.includes('invalid') || lowerMsg.includes('expired')) {
+    if (lowerMsg.includes('verification') || lowerMsg.includes('code')) {
+      return 'El código de verificación es inválido o ha expirado. Por favor, solicita uno nuevo para continuar.';
+    }
+  }
+  return msg;
+};
+
+const errorMessage = ref(translateError(props.error));
+
+watch(() => props.error, (newVal) => {
+  errorMessage.value = translateError(newVal);
+  if (errorMessage.value.includes('expirado') || errorMessage.value.includes('inválido')) {
+    step.value = 1; // Return to email input to start over as requested
+  }
+});
+
+// Clear error when user types
+watch([internalEmail, internalName, code], () => {
+  if (errorMessage.value) errorMessage.value = '';
+});
+
+const resolvedUserId = ref<string | null>(null);
 
 const requestToken = async () => {
   if (!internalEmail.value) {
     errorMessage.value = 'El correo electrónico es requerido.';
     return;
   }
-  
+
   try {
     isLoading.value = true;
     errorMessage.value = '';
-    await paymentAPI.requestVerification({
+    const response = await paymentAPI.requestVerification({
       email: internalEmail.value,
       name: internalName.value
     });
+    resolvedUserId.value = response.userId;
     step.value = 2;
   } catch (err: any) {
-    errorMessage.value = err.message || 'Error al enviar el código.';
+    const msg = err.response?.data?.message || err.message || 'Error al enviar el código.';
+    errorMessage.value = translateError(msg);
   } finally {
     isLoading.value = false;
   }
@@ -49,23 +81,23 @@ const verifyCode = async () => {
     return;
   }
 
-  // Verification is actually checked on the next step (charge processing in backend uses the code)
-  // But we want to "proceed" if the user has a code.
-  // Actually, the backend requestPaymentVerification returns the resolvedUserId if found.
-  // We should probably check the code here if the backend had a 'verify' endpoint that just checks.
-  // The provided backend doesn't have a standalone verify, it checks it DURING charge.
-  // Wait, the backend router HAS: router.post("/paymentez/verify-code", requestPaymentVerification);
-  // and requestPaymentVerification sends the email.
-  // It doesn't seem to have a /verify part? 
-  // Wait, let's re-read the provided controller code.
-  // requestPaymentVerification: generates code, saves to DB, sends email, returns userId.
-  // It doesn't actually verify the code.
-  
-  // So "verified" emit will just mean "I have a code and I want to proceed".
-  // We'll pass the code up.
-  emit('update:email', internalEmail.value);
-  emit('update:name', internalName.value);
-  emit('verified', { email: internalEmail.value, code: code.value });
+  try {
+    isLoading.value = true;
+    errorMessage.value = '';
+
+    emit('update:email', internalEmail.value);
+    emit('update:name', internalName.value);
+    emit('verified', {
+      email: internalEmail.value,
+      code: code.value,
+      userId: resolvedUserId.value
+    });
+  } catch (err: any) {
+    const msg = err.response?.data?.message || err.message || 'Error al verificar el código.';
+    errorMessage.value = translateError(msg);
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
@@ -95,7 +127,12 @@ const verifyCode = async () => {
         />
       </div>
 
-      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+      <Transition name="fade">
+        <div v-if="errorMessage" class="error-message">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+      </Transition>
 
       <button @click="requestToken" class="btn-primary" :disabled="isLoading">
         <span v-if="isLoading">Enviando...</span>
@@ -123,7 +160,12 @@ const verifyCode = async () => {
         />
       </div>
 
-      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+      <Transition name="fade">
+        <div v-if="errorMessage" class="error-message">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+      </Transition>
 
       <button @click="verifyCode" class="btn-primary" :disabled="isLoading">
         Continuar al Pago
@@ -148,14 +190,14 @@ const verifyCode = async () => {
   flex-direction: column;
   gap: 1.2rem;
   text-align: center;
-  
+
   h3 {
     font-family: 'Playfair Display', serif;
     color: colors.$BRAND-PRIMARY;
     font-size: 1.4rem;
     margin-bottom: 0.5rem;
   }
-  
+
   p {
     font-size: 0.9rem;
     color: colors.$text-light;
@@ -182,12 +224,12 @@ const verifyCode = async () => {
   font-size: 1rem;
   background-color: white;
   color: #000;
-  
+
   &:focus {
     outline: none;
     border-color: colors.$BRAND-PRIMARY;
   }
-  
+
   &.code-input {
     text-align: center;
     font-size: 1.5rem;
@@ -204,7 +246,7 @@ const verifyCode = async () => {
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  
+
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
@@ -223,9 +265,30 @@ const verifyCode = async () => {
 .error-message {
   color: colors.$error;
   font-size: 0.85rem;
-  background: rgba(colors.$error, 0.1);
-  padding: 0.5rem;
-  border-radius: 4px;
+  background: rgba(colors.$error, 0.08);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-left: 3px solid colors.$error;
+  text-align: left;
+  margin: 0.5rem 0;
+
+  i {
+    font-size: 1rem;
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-5px);
 }
 
 .verification-note {
