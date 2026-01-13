@@ -11,7 +11,7 @@ const event = ref<Event | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const showReservationModal = ref(false);
-const reservationMode = ref<'whatsapp' | 'paymentez'>('whatsapp');
+const reservationMode = ref<'whatsapp' | 'paymentez' | 'help'>('whatsapp');
 const guestCount = ref(2);
 
 const incrementGuests = () => {
@@ -101,6 +101,11 @@ const handleWhatsappReservation = () => {
   showReservationModal.value = true;
 };
 
+const handleHelpRequest = () => {
+  reservationMode.value = 'help';
+  showReservationModal.value = true;
+};
+
 onMounted(async () => {
   fetchEventDetail();
 });
@@ -174,19 +179,32 @@ const goBack = () => {
             <button @click="handleWhatsappReservation" class="btn-reserve btn-whatsapp">
               <i class="fa-brands fa-whatsapp"></i> Reservar por WhatsApp
             </button>
-
-            <!-- Modal para redirección a WhatsApp -->
-            <ReservationModal 
-              :is-open="showReservationModal" 
-              :event-name="event.title"
-              :event-date="event.date"
-              :event-time="event.time"
-              :guest-count="guestCount"
-              :initial-mode="reservationMode"
-              :event-price="numericPrice"
-              @close="showReservationModal = false"
-            />
           </div>
+
+          <div class="help-center-teaser">
+            <div class="teaser-icon">
+              <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <div class="teaser-content">
+              <h4>¿Ya tienes una reserva?</h4>
+              <p>Gestiona tus tarjetas, revisa tus consumos o solicita reembolsos.</p>
+              <button @click="handleHelpRequest" class="btn-text-help">
+                Ir al Centro de Ayuda <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Modal para redirección a WhatsApp -->
+          <ReservationModal 
+            :is-open="showReservationModal" 
+            :event-name="event.title"
+            :event-date="event.date"
+            :event-time="event.time"
+            :guest-count="guestCount"
+            :initial-mode="reservationMode"
+            :event-price="numericPrice"
+            @close="showReservationModal = false"
+          />
         </aside>
       </div>
     </article>
@@ -447,6 +465,59 @@ const goBack = () => {
   &.btn-whatsapp {
     background: #25D366;
     color: colors.$white;
+  }
+}
+
+.help-center-teaser {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  border-left: 4px solid colors.$BRAND-PRIMARY;
+
+  .teaser-icon {
+    font-size: 1.5rem;
+    color: colors.$BRAND-PRIMARY;
+    margin-top: 0.2rem;
+  }
+
+  .teaser-content {
+    h4 {
+      font-size: 1rem;
+      color: colors.$text-dark;
+      margin-bottom: 0.3rem;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 0.85rem;
+      color: colors.$text-light;
+      line-height: 1.4;
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+.btn-text-help {
+  background: none;
+  border: none;
+  color: colors.$BRAND-PRIMARY;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: gap 0.2s;
+
+  &:hover {
+    gap: 0.6rem;
+    text-decoration: underline;
   }
 }
 
