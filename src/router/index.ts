@@ -15,6 +15,7 @@ const router = createRouter({
     { path: '/events/:slug', name: 'event-detail', component: EventDetail },
     { path: '/eventos-corporativos', name: 'corporate-events', component: () => import('@/views/events/CorporateEvents.vue') },
     { path: '/reservations', name: 'reservations', component: ReservationsPage },
+    { path: '/wallet', name: 'wallet', component: () => import('@/views/wallet/WalletView.vue') },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFoundPage },
   ],
   scrollBehavior(to, from, savedPosition) {
