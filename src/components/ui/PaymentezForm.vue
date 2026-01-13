@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import paymentezService from '@/services/paymentez';
+import { ref } from 'vue';
+import PaymentVerification from '@/components/payment/PaymentVerification.vue';
+import PaymentCardList from '@/components/payment/PaymentCardList.vue';
+import PaymentNewCard from '@/components/payment/PaymentNewCard.vue';
 import paymentAPI from '@/services/payment';
 
 const props = defineProps({
@@ -32,147 +34,116 @@ const props = defineProps({
 
 const emit = defineEmits(['success', 'error', 'cancel']);
 
-const isLoading = ref(true);
+// States: 'identifying' -> 'selecting_card' -> 'entering_new_card' -> 'processing'
+const step = ref('identifying');
+const internalUserId = ref(props.userId);
+const internalEmail = ref(props.userEmail);
+const internalName = ref(props.userName);
+const verificationCode = ref('');
+const selectedCardToken = ref('');
 const isProcessing = ref(false);
 const errorMessage = ref('');
-const gateway = ref<any>(null);
-const customerName = ref(props.userName || '');
+const newCardRef = ref<any>(null);
 
-const initPaymentez = async () => {
+const handleVerified = (data: { email: string, code: string }) => {
+  internalEmail.value = data.email;
+  verificationCode.value = data.code;
+  // Note: We'll use the provided userId for now, or the one from previous sessions if backend returned it.
+  // The backend return value of requestVerification could be useful here.
+  step.value = 'selecting_card';
+};
+
+const handleCardSelected = async (card: any) => {
+  selectedCardToken.value = card.token;
+  await processPayment();
+};
+
+const handleNewCardTokenized = async (token: string) => {
+  selectedCardToken.value = token;
+  await processPayment();
+};
+
+const processPayment = async () => {
   try {
-    isLoading.value = true;
-    gateway.value = await paymentezService.createGateway();
+    isProcessing.value = true;
+    errorMessage.value = '';
 
-    const tokenizeData = {
-      locale: 'es',
-      user: {
-        id: props.userId,
-        email: props.userEmail,
-      },
-      configuration: {
-        default_country: 'ECU', // Assuming Ecuador based on context
-        require_billing_address: false,
-      },
+    const chargeData = {
+      token: selectedCardToken.value,
+      amount: props.amount,
+      email: internalEmail.value,
+      userId: internalUserId.value,
+      verificationCode: verificationCode.value,
+      description: `${props.description} (Entradas: ${props.guestCount})`,
+      name: internalName.value
     };
 
-    gateway.value.generate_tokenize(
-      tokenizeData,
-      '#paymentez-container',
-      handleResponse,
-      handleIncompleteForm
-    );
-
-    isLoading.value = false;
-  } catch (err) {
-    console.error('Error initializing Paymentez:', err);
-    errorMessage.value = 'No se pudo cargar la pasarela de pagos.';
-    isLoading.value = false;
-  }
-};
-
-const handleResponse = async (response: any) => {
-  if (response.card && response.card.status === 'valid') {
-    if (!customerName.value.trim()) {
-      errorMessage.value = 'Por favor, ingresa el nombre de la persona que asistirá.';
-      isProcessing.value = false;
-      return;
-    }
-
-    try {
-      // Step 2: Process the charge on our backend
-      const chargeData = {
-        token: response.card.token,
-        amount: props.amount,
-        email: props.userEmail,
-        userId: props.userId,
-        description: `${props.description} (Entradas: ${props.guestCount})`,
-        name: customerName.value
-      };
-
-      const apiResponse = await paymentAPI.processCharge(chargeData);
-
-      isProcessing.value = false;
-      emit('success', apiResponse.transaction);
-    } catch (err: any) {
-      console.error('Error processing charge on backend:', err);
-      errorMessage.value = err.message || 'Error al procesar el pago en el servidor.';
-      isProcessing.value = false;
-      emit('error', err);
-    }
-  } else if (response.error) {
+    const response = await paymentAPI.processCharge(chargeData);
+    
     isProcessing.value = false;
-    errorMessage.value = response.error.type || 'Error en la tokenización';
-    emit('error', response.error);
-  } else {
+    emit('success', response.transaction);
+  } catch (err: any) {
+    console.error('Payment processing error:', err);
+    errorMessage.value = err.message || 'Error al procesar el pago.';
     isProcessing.value = false;
+    // If it was a code error, maybe go back to verification? 
+    // For now stay here and show error.
   }
 };
 
-const handleIncompleteForm = (message: string) => {
-  isProcessing.value = false;
-  errorMessage.value = 'Por favor, completa todos los campos requeridos.';
-};
-
-const handleTokenize = () => {
-  if (!customerName.value.trim()) {
-    errorMessage.value = 'Por favor, ingresa el nombre de la persona que asistirá.';
-    return;
-  }
-
-  errorMessage.value = '';
-  isProcessing.value = true;
-  if (gateway.value) {
-    gateway.value.tokenize();
+const handleButtonClick = () => {
+  if (step.value === 'entering_new_card' && newCardRef.value) {
+    newCardRef.value.tokenize();
   }
 };
-
-onMounted(() => {
-  initPaymentez();
-});
-
-onBeforeUnmount(() => {
-  // Cleanup if needed, though SDK doesn't specify a destroy method
-});
 </script>
 
 <template>
-  <div class="paymentez-form">
-    <div v-if="isLoading" class="paymentez-loader">
+  <div class="paymentez-form-stepper">
+    <!-- Step 1 & 2: Verification -->
+    <PaymentVerification 
+      v-if="step === 'identifying'"
+      v-model:email="internalEmail"
+      v-model:name="internalName"
+      @verified="handleVerified"
+    />
+
+    <!-- Step 3: Selection -->
+    <PaymentCardList
+      v-else-if="step === 'selecting_card'"
+      :user-id="internalUserId"
+      @select="handleCardSelected"
+      @add-new="step = 'entering_new_card'"
+    />
+
+    <!-- Step 4: New Card -->
+    <PaymentNewCard
+      v-else-if="step === 'entering_new_card'"
+      ref="newCardRef"
+      :user-id="internalUserId"
+      :user-email="internalEmail"
+      @tokenized="handleNewCardTokenized"
+      @cancel="step = 'selecting_card'"
+    />
+
+    <!-- Global Processing View -->
+    <div v-if="isProcessing" class="processing-overlay">
       <div class="spinner"></div>
-      <p>Cargando pasarela segura...</p>
+      <p>Procesando transacción segura...</p>
     </div>
 
-    <div v-show="!isLoading" class="form-inputs">
-      <div class="input-group">
-        <label for="customer-name" class="input-label">Nombre de la persona que asistirá</label>
-        <input 
-          id="customer-name" 
-          v-model="customerName" 
-          type="text" 
-          placeholder="Escribe el nombre del asistente"
-          :disabled="isProcessing"
-          class="form-input"
-        />
-      </div>
-
-      <div id="paymentez-container" class="paymentez-container"></div>
-    </div>
-
-    <div v-if="errorMessage" class="error-message">
+    <div v-if="errorMessage && !isProcessing" class="error-message">
       {{ errorMessage }}
     </div>
 
-    <div class="form-actions" v-if="!isLoading">
+    <div class="form-actions" v-if="!isProcessing && step !== 'identifying'">
       <button 
-        @click="handleTokenize" 
-        class="btn-submit" 
+        v-if="step === 'entering_new_card'"
+        @click="handleButtonClick" 
+        class="btn-submit"
         :disabled="isProcessing"
       >
-        <div v-if="isProcessing" class="btn-loader">
-          <div class="spinner-small"></div>
-          <span>Procesando...</span>
-        </div>
-        <span v-else>Pagar ${{ amount }}</span>
+        <span>Pagar ${{ amount }}</span>
       </button>
       
       <button 
@@ -189,90 +160,42 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 @use '@/styles/colorVariables.module.scss' as colors;
 
-.paymentez-form {
+.paymentez-form-stepper {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  text-align: left;
 }
 
-.paymentez-loader {
+.processing-overlay {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  gap: 1rem;
-  color: colors.$text-light;
-}
-
-.form-inputs {
-  display: flex;
-  flex-direction: column;
+  padding: 3rem 0;
   gap: 1.5rem;
-}
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  .input-label {
-    font-size: 0.9rem;
+  
+  p {
     font-weight: 600;
-    color: colors.$text-dark;
-  }
-
-  .form-input {
-    padding: 0.8rem 1rem;
-    border: 1px solid colors.$border-light;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
-    background-color: white;
-
-    color: #000000;
-
-    &:focus {
-      outline: none;
-      border-color: colors.$BRAND-PRIMARY;
-      box-shadow: 0 0 0 2px rgba(colors.$BRAND-PRIMARY, 0.1);
-    }
-
-    &:disabled {
-      background-color: colors.$background-light;
-      cursor: not-allowed;
-    }
-  }
-}
-
-.paymentez-container {
-  min-height: 200px;
-  width: 100%;
-
-  :deep(.paymentez-input) {
-    border-radius: 8px !important;
-    border: 1px solid colors.$border-light !important;
-    padding: 10px !important;
+    color: colors.$BRAND-PRIMARY;
+    animation: pulse 2s infinite;
   }
 }
 
 .error-message {
-  padding: 0.75rem;
+  padding: 1rem;
   background-color: rgba(colors.$error, 0.1);
   color: colors.$error;
   border-radius: 8px;
   font-size: 0.9rem;
   text-align: center;
-  font-weight: 500;
 }
 
 .form-actions {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 }
 
 .btn-submit {
@@ -280,34 +203,17 @@ onBeforeUnmount(() => {
   color: white;
   border: none;
   padding: 1.1rem;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: bold;
   font-size: 1.1rem;
   cursor: pointer;
+  box-shadow: 0 4px 15px rgba(colors.$BRAND-PRIMARY, 0.2);
   transition: all 0.3s;
-  box-shadow: 0 4px 12px rgba(colors.$BRAND-PRIMARY, 0.2);
 
-  &:hover:not(:disabled) {
-    background-color: lighten(colors.$BRAND-PRIMARY, 5%);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 15px rgba(colors.$BRAND-PRIMARY, 0.3);
+  &:hover {
+    background-color: darken(colors.$BRAND-PRIMARY, 5%);
+    transform: translateY(-2px);
   }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-}
-
-.btn-loader {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
 }
 
 .btn-cancel {
@@ -315,38 +221,24 @@ onBeforeUnmount(() => {
   border: 1px solid colors.$border-light;
   color: colors.$text-light;
   padding: 0.8rem;
-  border-radius: 8px;
-  font-weight: 500;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.3s;
-
-  &:hover:not(:disabled) {
-    background: colors.$background-light;
-    color: colors.$text-dark;
-  }
 }
 
 .spinner {
-  width: 35px;
-  height: 35px;
-  border: 3px solid colors.$gray-200;
+  width: 45px;
+  height: 45px;
+  border: 4px solid rgba(0,0,0,0.1);
   border-top-color: colors.$BRAND-PRIMARY;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
-.spinner-small {
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
 }
 </style>
+
