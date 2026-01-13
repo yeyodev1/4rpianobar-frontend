@@ -1,6 +1,8 @@
+```
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, type PropType } from 'vue';
 import PaymentezForm from './PaymentezForm.vue';
+import PaymentTicket from '../payment/PaymentTicket.vue';
 
 const props = defineProps({
   isOpen: {
@@ -24,9 +26,9 @@ const props = defineProps({
     default: 1
   },
   initialMode: {
-    type: String,
-    default: 'whatsapp' // 'whatsapp' or 'paymentez'
-  },
+    type: String as PropType<'whatsapp' | 'paymentez' | 'help'>,
+    default: 'whatsapp'
+  }, // 'whatsapp' or 'paymentez' or 'help'
   eventPrice: {
     type: Number,
     default: 0
@@ -38,6 +40,7 @@ const emit = defineEmits(['close']);
 const currentMode = ref(props.initialMode);
 const paymentSuccess = ref(false);
 const transactionData = ref<any>(null);
+const showExitConfirm = ref(false);
 
 const totalAmount = computed(() => props.eventPrice * props.guestCount);
 
@@ -45,6 +48,7 @@ watch(() => props.isOpen, (newVal) => {
   if (newVal) {
     currentMode.value = props.initialMode;
     paymentSuccess.value = false;
+    showExitConfirm.value = false;
   }
 });
 
@@ -75,34 +79,24 @@ const handlePaymentSuccess = (transaction: any) => {
 };
 
 const close = () => {
+  // If payment is already a success, close without warning
+  if (paymentSuccess.value) {
+    emit('close');
+    return;
+  }
+
+  // If we are in WhatsApp mode and haven't started anything complex, just close
+  // But if we are in Paymentez mode, warn them
+  if (currentMode.value === 'paymentez') {
+    showExitConfirm.value = true;
+  } else {
+    emit('close');
+  }
+};
+
+const confirmClose = () => {
+  showExitConfirm.value = false;
   emit('close');
-};
-
-const saveTicket = () => {
-  const originalTitle = document.title;
-  document.title = `Ticket_Reserva_${props.eventName.replace(/\s+/g, '_')}`;
-  window.print();
-  document.title = originalTitle;
-};
-
-const shareTicketWhatsApp = () => {
-  if (!transactionData.value) return;
-
-  const t = transactionData.value;
-  const message = `*TICKET DE RESERVA - 4R PIANO BAR*\n\n` +
-    `*Evento:* ${props.eventName}\n` +
-    `*Fecha:* ${props.eventDate || 'N/A'}\n` +
-    `*Hora:* ${props.eventTime || 'N/A'}\n` +
-    `*Cliente:* ${t.name || 'N/A'}\n` +
-    `*Asistentes:* ${props.guestCount} persona(s)\n` +
-    `*Total Pagado:* $${t.amount} ${t.currency}\n` +
-    `---------------------------\n` +
-    `*Ref. Pago:* ${t.gateway_transaction_id}\n` +
-    `*Cod. Autorización:* ${t.authorization_code}\n\n` +
-    `_Favor presentar este mensaje en la puerta._`;
-
-  const url = `https://wa.me/593979279877?text=${encodeURIComponent(message)}`;
-  window.open(url, '_blank');
 };
 
 // Auto-check for existing reservation on mount
@@ -135,95 +129,16 @@ onMounted(() => {
           
           <div class="modal-content">
             <!-- Success State: Virtual Ticket -->
-            <div v-if="paymentSuccess && transactionData" class="ticket-view">
-              <div class="ticket-header">
-                <div class="icon-success-wrapper">
-                  <i class="fa-solid fa-check"></i>
-                </div>
-                <h2 class="ticket-status-title">¡Reserva Confirmada!</h2>
-                <p class="ticket-status-subtitle">Tu pago ha sido procesado exitosamente</p>
-                
-                <!-- Reminder Alert -->
-                <div class="capture-reminder">
-                  <i class="fa-solid fa-camera"></i>
-                  <span><strong>Recomendación:</strong> Toma una captura de pantalla o descarga el ticket ahora. Por seguridad, no guardamos sesiones persistentes.</span>
-                </div>
-              </div>
-
-              <div class="virtual-ticket" id="reservation-ticket">
-                <div class="ticket-top">
-                  <div class="ticket-brand">4R PIANO BAR</div>
-                  <div class="ticket-type">TICKET DE ACCESO</div>
-                </div>
-                
-                <div class="ticket-body">
-                  <div class="ticket-main-info">
-                    <h3 class="event-name">{{ eventName }}</h3>
-                    <div class="event-datetime">
-                      <span><i class="fa-regular fa-calendar"></i> {{ eventDate || 'Fecha por confirmar' }}</span>
-                      <span><i class="fa-regular fa-clock"></i> {{ eventTime || 'Hora por confirmar' }}</span>
-                    </div>
-                  </div>
-
-                  <div class="ticket-details-grid">
-                    <div class="detail-item">
-                      <label>Cliente</label>
-                      <span>{{ transactionData.name }}</span>
-                    </div>
-                    <div class="detail-item">
-                      <label>Personas</label>
-                      <span>{{ guestCount }}</span>
-                    </div>
-                    <div class="detail-item">
-                      <label>Total Pagado</label>
-                      <span class="price-value">${{ transactionData.amount }} {{ transactionData.currency }}</span>
-                    </div>
-                    <div class="detail-item">
-                      <label>Estado</label>
-                      <span class="status-badge">PAGADO</span>
-                    </div>
-                  </div>
-
-                  <div class="ticket-divider">
-                    <div class="dot left"></div>
-                    <div class="line"></div>
-                    <div class="dot right"></div>
-                  </div>
-
-                  <div class="ticket-footer-info">
-                    <div class="footer-item">
-                      <label>Ref. de Pago</label>
-                      <code>{{ transactionData.gateway_transaction_id }}</code>
-                    </div>
-                    <div class="footer-item">
-                      <label>Cod. Autorización</label>
-                      <code>{{ transactionData.authorization_code }}</code>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="ticket-instructions">
-                  <i class="fa-solid fa-circle-info"></i>
-                  Presenta este ticket digital en la puerta el día del evento.
-                </div>
-              </div>
-
-              <div class="ticket-actions">
-                <button @click="shareTicketWhatsApp" class="btn-action btn-whatsapp-ticket">
-                  <i class="fa-brands fa-whatsapp"></i>
-                  Enviar a WhatsApp
-                </button>
-                <div class="secondary-actions">
-                  <button @click="saveTicket" class="btn-action btn-save">
-                    <i class="fa-solid fa-download"></i>
-                    Guardar Detalles
-                  </button>
-                  <button @click="close" class="btn-action btn-finish">
-                    Finalizar
-                  </button>
-                </div>
-              </div>
-            </div>
+            <PaymentTicket 
+              v-if="paymentSuccess && transactionData"
+              :transaction="transactionData"
+              :event-name="eventName"
+              :guest-count="guestCount"
+              :event-date="eventDate"
+              :event-time="eventTime"
+              show-success-header
+              @close="close"
+            />
 
             <!-- WhatsApp Mode -->
             <div v-else-if="currentMode === 'whatsapp'" class="state-view">
@@ -248,14 +163,36 @@ onMounted(() => {
               </button>
             </div>
 
-            <!-- Paymentez Mode -->
-            <div v-else-if="currentMode === 'paymentez'" class="state-view">
-              <div class="icon-wrapper icon-wrapper--card">
-                <i class="fa-solid fa-credit-card"></i>
+            <!-- Mode: Paymentez -->
+            <div v-else-if="currentMode === 'paymentez' || currentMode === 'help'" class="modal-paymentez">
+              <div class="modal-icon">
+                <i v-if="currentMode === 'paymentez'" class="fa-solid fa-credit-card"></i>
+                <i v-else class="fa-solid fa-circle-question"></i>
               </div>
               
-              <h2 class="modal-title">Pago con Tarjeta</h2>
-              <p class="modal-subtitle">Introduce los datos de tu tarjeta para completar la reserva de <strong>{{ guestCount }} personas</strong>.</p>
+              <h2 class="modal-title">{{ currentMode === 'paymentez' ? 'Finalizar Reserva' : 'Ayuda con Reservas' }}</h2>
+              
+              <div class="purchase-summary" v-if="currentMode === 'paymentez'">
+                <p class="summary-item">
+                  <span>Evento:</span>
+                  <strong>{{ eventName }}</strong>
+                </p>
+                <p class="summary-item">
+                  <span>Asistentes:</span>
+                  <strong>{{ guestCount }} personas</strong>
+                </p>
+                <p class="summary-total">
+                  <span>Total a pagar:</span>
+                  <strong>${{ totalAmount }}</strong>
+                </p>
+              </div>
+              
+              <p class="modal-subtitle">
+                {{ currentMode === 'paymentez'
+                  ? 'Selecciona o introduce los datos de tu tarjeta para completar la compra.'
+                  : 'Verifica tu cuenta para gestionar tus tarjetas y transacciones.'
+                }}
+              </p>
               
               <div class="modal-body modal-body--form">
                 <PaymentezForm 
@@ -264,6 +201,7 @@ onMounted(() => {
                   :amount="totalAmount"
                   :guest-count="guestCount"
                   :description="'Reserva para: ' + eventName"
+                  :auto-help="currentMode === 'help'"
                   @success="handlePaymentSuccess"
                   @cancel="currentMode = 'whatsapp'"
                 />
@@ -273,6 +211,30 @@ onMounted(() => {
         </div>
       </div>
     </Transition>
+
+    <!-- Exit Confirmation Modal (Nested Teleport) -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="showExitConfirm" class="exit-modal-backdrop" @click="showExitConfirm = false">
+          <div class="exit-modal-container" @click.stop>
+            <div class="exit-icon">
+              <i class="fa-solid fa-person-running"></i>
+            </div>
+            <h3>¿Seguro que quieres salir?</h3>
+            <p>Si cierras ahora, perderás el progreso de tu reserva para <strong>{{ eventName }}</strong>.</p>
+            
+            <div class="exit-actions">
+              <button @click="showExitConfirm = false" class="btn-stay">
+                Continuar con la Reserva
+              </button>
+              <button @click="confirmClose" class="btn-exit">
+                Sí, salir de todos modos
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </Teleport>
 </template>
 
@@ -298,12 +260,17 @@ onMounted(() => {
   background-color: #fcfcfc;
   width: 100%;
   max-width: 450px;
+  max-height: 90vh;
   border-radius: 20px;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
   position: relative;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   border: 1px solid rgba(colors.$BRAND-PRIMARY, 0.1);
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  margin-top: auto;
+  margin-bottom: auto;
 
   &--large {
     max-width: 550px;
@@ -342,6 +309,8 @@ onMounted(() => {
 
 .modal-content {
   padding: 2.5rem 1.5rem;
+  overflow-y: auto;
+  flex: 1;
 }
 
 /* Success / Ticket Styles */
@@ -691,6 +660,43 @@ onMounted(() => {
   margin-bottom: 0.5rem;
 }
 
+.purchase-summary {
+  background: colors.$background-light;
+  border-radius: 12px;
+  padding: 1.2rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  border-left: 4px solid colors.$BRAND-PRIMARY;
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: colors.$text-light;
+    margin-bottom: 0.4rem;
+
+    strong {
+      color: colors.$text-dark;
+    }
+  }
+
+  .summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px dashed colors.$border-light;
+    color: colors.$text-dark;
+
+    strong {
+      color: colors.$BRAND-PRIMARY;
+      font-size: 1.3rem;
+    }
+  }
+}
+
 .modal-subtitle {
   color: colors.$text-light;
   font-size: 0.95rem;
@@ -810,5 +816,127 @@ onMounted(() => {
     box-shadow: none;
     margin: 0;
   }
+}
+
+/* Exit Confirmation Styles */
+.exit-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+  padding: 1.5rem;
+}
+
+.exit-modal-container {
+  background: white;
+  width: 100%;
+  max-width: 400px;
+  padding: 3rem 2rem;
+  border-radius: 30px;
+  text-align: center;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+  animation: modalIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+
+  .exit-icon {
+    width: 70px;
+    height: 70px;
+    background: rgba(colors.$BRAND-PRIMARY, 0.1);
+    color: colors.$BRAND-PRIMARY;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    margin: 0 auto 1.5rem;
+  }
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    color: colors.$text-dark;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: colors.$text-light;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    font-size: 1rem;
+
+    strong {
+      color: colors.$text-dark;
+    }
+  }
+}
+
+.exit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.btn-stay {
+  background: colors.$BRAND-PRIMARY;
+  color: white;
+  border: none;
+  padding: 1.1rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(colors.$BRAND-PRIMARY, 0.2);
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(colors.$BRAND-PRIMARY, 0.3);
+  }
+}
+
+.btn-exit {
+  background: none;
+  border: 1px solid colors.$border-light;
+  color: colors.$text-light;
+  padding: 0.9rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: colors.$background-light;
+    color: colors.$error;
+    border-color: colors.$error;
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
