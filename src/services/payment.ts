@@ -35,6 +35,65 @@ export interface PaymentResponse {
     amount: number;
     [key: string]: any;
   };
+  gateway_response?: {
+    transaction: {
+      id: string;
+      status: string;
+      current_status?: string;
+      status_detail?: number;
+      carrier_code?: string;
+      authorization_code?: string;
+      amount: number;
+      [key: string]: any;
+    };
+    card?: any;
+  };
+}
+
+export interface OTPVerificationRequest {
+  userId: string;
+  transactionId: string;
+  email: string;
+  code: string;
+  otp: string;
+}
+
+export interface OTPVerificationResponse {
+  message: string;
+  transaction: {
+    id: string;
+    status: string;
+    authorization_code?: string;
+    amount: number;
+    carrier_code?: string;
+    [key: string]: any;
+  };
+  gateway_response?: {
+    transaction: {
+      id: string;
+      status: string;
+      current_status?: string;
+      status_detail?: number;
+      carrier_code?: string;
+      authorization_code?: string;
+      amount: number;
+      [key: string]: any;
+    };
+    card?: any;
+  };
+}
+
+export interface InitReferenceRequest {
+  userId: string;
+  email: string;
+  amount: number;
+  description: string;
+  verificationCode: string;
+}
+
+export interface InitReferenceResponse {
+  reference: string;
+  message: string;
 }
 
 class PaymentAPI extends APIBase {
@@ -65,6 +124,25 @@ class PaymentAPI extends APIBase {
 
   async refund(transactionId: string, amount?: number): Promise<any> {
     const response = await this.post('payment/paymentez/refund', { transactionId, amount });
+    return response.data;
+  }
+
+  async verifyOTP(data: OTPVerificationRequest): Promise<OTPVerificationResponse> {
+    const response = await this.post<OTPVerificationResponse>('payment/paymentez/verify-otp', data);
+    return response.data;
+  }
+
+  async initPaymentReference(data: InitReferenceRequest): Promise<InitReferenceResponse> {
+    const response = await this.post<InitReferenceResponse>('payment/paymentez/init-reference', data);
+    return response.data;
+  }
+
+  async saveTransaction(transaction: any, userId: string, email: string): Promise<any> {
+    const response = await this.post('payment/paymentez/save-transaction', {
+      transaction,
+      userId,
+      email
+    });
     return response.data;
   }
 }
