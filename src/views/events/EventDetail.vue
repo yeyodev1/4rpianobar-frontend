@@ -13,6 +13,7 @@ const error = ref<string | null>(null);
 const showReservationModal = ref(false);
 const reservationMode = ref<'whatsapp' | 'paymentez' | 'help'>('whatsapp');
 const guestCount = ref(2);
+const isCheckoutOpen = ref(false); // Track if Checkout modal is open
 
 const incrementGuests = () => {
   if (guestCount.value < 20) guestCount.value++;
@@ -103,6 +104,18 @@ const handleWhatsappReservation = () => {
 
 const handleHelpRequest = () => {
   reservationMode.value = 'help';
+  showReservationModal.value = true;
+};
+
+const handleHideModalForCheckout = () => {
+  console.log('[EventDetail] Hiding ReservationModal for Checkout');
+  isCheckoutOpen.value = true;
+  showReservationModal.value = false;
+};
+
+const handleShowModalAfterCheckout = () => {
+  console.log('[EventDetail] Showing ReservationModal after Checkout closed');
+  isCheckoutOpen.value = false;
   showReservationModal.value = true;
 };
 
