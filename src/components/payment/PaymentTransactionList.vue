@@ -51,49 +51,12 @@ watch(() => props.verificationCode, () => {
   fetchTransactions();
 });
 
-const showRefundConfirm = ref(false);
-const refundTargetTx = ref<{ id: string, amount: number } | null>(null);
-const isRefunding = ref(false);
-
 const selectedTransaction = ref<any>(null);
 const showTicketModal = ref(false);
 
 const openTicket = (tx: any) => {
   selectedTransaction.value = tx;
   showTicketModal.value = true;
-};
-
-const toast = ref<{ show: boolean, type: 'success' | 'error', message: string }>({
-  show: false,
-  type: 'success',
-  message: ''
-});
-
-const showToast = (message: string, type: 'success' | 'error' = 'success') => {
-  toast.value = { show: true, type, message };
-  setTimeout(() => { toast.value.show = false; }, 4000);
-};
-
-const confirmRefund = (txId: string, amount: number) => {
-  refundTargetTx.value = { id: txId, amount };
-  showRefundConfirm.value = true;
-};
-
-const handleRefund = async () => {
-  if (!refundTargetTx.value) return;
-
-  try {
-    isRefunding.value = true;
-    await paymentAPI.refund(refundTargetTx.value.id, refundTargetTx.value.amount);
-    showToast('¡Reembolso solicitado exitosamente!', 'success');
-    showRefundConfirm.value = false;
-    await fetchTransactions(); // Refresh
-  } catch (err: any) {
-    showToast(err.message || 'Error al procesar el reembolso.', 'error');
-  } finally {
-    isRefunding.value = false;
-    refundTargetTx.value = null;
-  }
 };
 
 const retryVerification = () => {
@@ -123,9 +86,9 @@ onMounted(() => {
     </div>
 
     <div v-else-if="transactions.length > 0" class="transactions-container">
-      <h3>Historial de Pagos</h3>
+      <h3>Historial de Pagos ({{ transactions.length }})</h3>
       
-      <div class="table-responsive">
+      <div class="table-responsive elegant-scroll">
         <table class="transactions-table">
           <thead>
             <tr>
@@ -143,16 +106,18 @@ onMounted(() => {
               </td>
               <td class="desc-cell">
                 <span class="desc-text">{{ tx.description }}</span>
-                <span class="tx-id">Ref: {{ tx.gateway_transaction_id }}</span>
+                <div class="meta-info">
+                  <span class="tx-id">Ref: {{ tx.gateway_transaction_id }}</span>
+                  <span class="card-info" v-if="tx.card_token">
+                     • Tarjeta ****
+                  </span>
+                </div>
               </td>
               <td class="amount-cell">
                 ${{ tx.amount }}
               </td>
               <td class="status-cell">
                 <span class="tx-status" :class="tx.status">{{ tx.status }}</span>
-                <div v-if="tx.refunds && tx.refunds.length > 0" class="refund-note">
-                  Reembolso
-                </div>
               </td>
               <td class="actions-cell">
                 <div class="action-buttons">
@@ -163,14 +128,6 @@ onMounted(() => {
                     title="Ver Ticket"
                   >
                     <i class="fa-solid fa-ticket"></i>
-                  </button>
-                  <button 
-                    v-if="tx.status === 'success' && (!tx.refunds || tx.refunds.length === 0)" 
-                    @click="confirmRefund(tx.gateway_transaction_id, tx.amount)" 
-                    class="btn-refund-mini"
-                    title="Solicitar Reembolso"
-                  >
-                    <i class="fa-solid fa-rotate-left"></i>
                   </button>
                 </div>
               </td>
@@ -184,30 +141,7 @@ onMounted(() => {
       <p>No tienes transacciones registradas.</p>
     </div>
 
-    <!-- Custom Refund Confirmation Modal -->
     <Teleport to="body">
-      <Transition name="fade">
-        <div v-if="showRefundConfirm" class="refund-modal-backdrop" @click="showRefundConfirm = false">
-          <div class="refund-modal-container" @click.stop>
-            <div class="modal-decoration">
-              <i class="fa-solid fa-circle-exclamation"></i>
-            </div>
-            <h3>¿Solicitar Reembolso?</h3>
-            <p>Se procesará el reembolso de <strong>${{ refundTargetTx?.amount }}</strong> por la transacción con ID <code>{{ refundTargetTx?.id }}</code>.</p>
-            
-            <div class="modal-actions">
-              <button @click="handleRefund" class="btn-confirm-refund" :disabled="isRefunding">
-                <span v-if="!isRefunding">Sí, procesar reembolso</span>
-                <div v-else class="mini-spinner"></div>
-              </button>
-              <button @click="showRefundConfirm = false" class="btn-cancel-refund" :disabled="isRefunding">
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      </Transition>
-
       <Transition name="fade">
         <div v-if="showTicketModal" class="ticket-modal-backdrop" @click="showTicketModal = false">
           <div class="ticket-modal-container" @click.stop>
@@ -220,14 +154,6 @@ onMounted(() => {
               @close="showTicketModal = false"
             />
           </div>
-        </div>
-      </Transition>
-
-      <Transition name="slide-toast">
-        <div v-if="toast.show" class="toast-notification" :class="toast.type">
-          <i v-if="toast.type === 'success'" class="fa-solid fa-circle-check"></i>
-          <i v-else class="fa-solid fa-circle-xmark"></i>
-          <span>{{ toast.message }}</span>
         </div>
       </Transition>
     </Teleport>
@@ -321,23 +247,42 @@ onMounted(() => {
   border-radius: 12px;
   background: white;
   margin-top: 0.5rem;
+  min-height: 150px;
+  /* Ensure visibility */
+  max-height: 400px;
+  /* Limit height to force scroll */
+  overflow-y: auto;
 
   /* Custom scrollbar */
-  &::-webkit-scrollbar {
-    height: 6px;
-  }
+  &.elegant-scroll {
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
 
-  &::-webkit-scrollbar-thumb {
-    background: colors.$border-light;
-    border-radius: 10px;
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.02);
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(colors.$BRAND-PRIMARY, 0.4);
+      border-radius: 10px;
+      transition: background 0.2s;
+
+      &:hover {
+        background: rgba(colors.$BRAND-PRIMARY, 0.7);
+      }
+    }
   }
 }
 
 .transactions-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  /* Changed for sticky header support if needed later */
+  border-spacing: 0;
   min-width: 600px;
-  /* Force minimum width to trigger scroll on mobile */
   font-size: 0.85rem;
 
   th,
@@ -345,6 +290,15 @@ onMounted(() => {
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid colors.$border-light;
+  }
+
+  /* Sticky Header */
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fdfdfd;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
 
   th {
@@ -381,10 +335,16 @@ onMounted(() => {
     margin-bottom: 2px;
   }
 
-  .tx-id {
+  .meta-info {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
     font-size: 0.65rem;
     color: colors.$text-light;
-    font-family: monospace;
+
+    .tx-id {
+      font-family: monospace;
+    }
   }
 }
 
@@ -392,6 +352,10 @@ onMounted(() => {
   font-weight: 700;
   color: colors.$BRAND-PRIMARY;
   white-space: nowrap;
+}
+
+.status-cell {
+  min-width: 100px;
 }
 
 .tx-status {
@@ -419,36 +383,8 @@ onMounted(() => {
   }
 }
 
-.refund-note {
-  font-size: 0.65rem;
-  color: colors.$error;
-  font-weight: 600;
-  margin-top: 4px;
-}
-
 .actions-cell {
   text-align: center;
-}
-
-.btn-refund-mini {
-  background: white;
-  border: 1px solid colors.$border-light;
-  color: colors.$text-light;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background: colors.$error;
-    color: white;
-    border-color: colors.$error;
-    transform: scale(1.1);
-  }
 }
 
 .btn-ticket-mini {
@@ -537,147 +473,6 @@ onMounted(() => {
   }
 }
 
-/* Refund Modal Styles */
-.refund-modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  padding: 1rem;
-}
-
-.refund-modal-container {
-  background: white;
-  width: 100%;
-  max-width: 400px;
-  padding: 2.5rem;
-  border-radius: 24px;
-  text-align: center;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-  animation: modalIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-
-  .modal-decoration {
-    font-size: 3rem;
-    color: colors.$BRAND-PRIMARY;
-    margin-bottom: 1rem;
-  }
-
-  h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    color: colors.$text-dark;
-    margin-bottom: 0.8rem;
-  }
-
-  p {
-    font-size: 0.95rem;
-    color: colors.$text-light;
-    line-height: 1.5;
-    margin-bottom: 2rem;
-
-    code {
-      background: colors.$background-light;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: monospace;
-      color: colors.$text-dark;
-    }
-  }
-}
-
-.modal-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.btn-confirm-refund {
-  background: colors.$BRAND-PRIMARY;
-  color: white;
-  border: none;
-  padding: 1rem;
-  border-radius: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-
-  &:hover:not(:disabled) {
-    background: colors.$text-dark;
-    transform: translateY(-2px);
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-}
-
-.btn-cancel-refund {
-  background: none;
-  border: 1px solid colors.$border-light;
-  color: colors.$text-light;
-  padding: 0.8rem;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover:not(:disabled) {
-    background: colors.$background-light;
-    color: colors.$text-dark;
-  }
-}
-
-/* Toast Styles */
-.toast-notification {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 1rem 2rem;
-  border-radius: 50px;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  color: white;
-  font-weight: 600;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  z-index: 10001;
-  min-width: 300px;
-  justify-content: center;
-
-  &.success {
-    background: #2e7d32;
-  }
-
-  &.error {
-    background: #c62828;
-  }
-
-  i {
-    font-size: 1.2rem;
-  }
-}
-
-.mini-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
 @keyframes modalIn {
   from {
     opacity: 0;
@@ -688,26 +483,6 @@ onMounted(() => {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
-}
-
-@keyframes slide-toast-enter {
-  from {
-    opacity: 0;
-    transform: translate(-50%, 100%);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
-}
-
-.slide-toast-enter-active {
-  animation: slide-toast-enter 0.4s ease-out;
-}
-
-.slide-toast-leave-active {
-  animation: slide-toast-enter 0.3s ease-in reverse;
 }
 
 .fade-enter-active,
