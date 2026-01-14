@@ -1,7 +1,7 @@
 ```
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, type PropType } from 'vue';
-import PaymentezForm from './PaymentezForm.vue';
+import PaymentezCheckoutForm from './PaymentezCheckoutForm.vue';
 import PaymentTicket from '../payment/PaymentTicket.vue';
 
 const props = defineProps({
@@ -78,6 +78,16 @@ const handlePaymentSuccess = (transaction: any) => {
   }
 };
 
+const temporarilyHidden = ref(false);
+
+const handleRequestHide = () => {
+  temporarilyHidden.value = true;
+};
+
+const handleRequestShow = () => {
+  temporarilyHidden.value = false;
+};
+
 const close = () => {
   // If payment is already a success, close without warning
   if (paymentSuccess.value) {
@@ -121,7 +131,7 @@ onMounted(() => {
 <template>
   <Teleport to="body">
     <Transition name="modal-fade">
-      <div v-if="isOpen" class="modal-backdrop" @click="close">
+      <div v-if="isOpen" v-show="!temporarilyHidden" class="modal-backdrop" @click="close">
         <div class="modal-container" :class="{ 'modal-container--large': currentMode === 'paymentez' && !paymentSuccess, 'modal-container--ticket': paymentSuccess }" @click.stop>
           <button class="btn-close" @click="close" aria-label="Cerrar">
             <i class="fa-solid fa-xmark"></i>
@@ -195,15 +205,16 @@ onMounted(() => {
               </p>
               
               <div class="modal-body modal-body--form">
-                <PaymentezForm 
+                <PaymentezCheckoutForm 
                   :user-id="transactionData?.userId || 'u_' + Date.now()" 
                   :user-email="transactionData?.email || 'cliente@example.com'"
                   :amount="totalAmount"
                   :guest-count="guestCount"
                   :description="'Reserva para: ' + eventName"
-                  :auto-help="currentMode === 'help'"
                   @success="handlePaymentSuccess"
                   @cancel="currentMode = 'whatsapp'"
+                  @request-hide-modal="handleRequestHide"
+                  @request-show-modal="handleRequestShow"
                 />
               </div>
             </div>
@@ -252,7 +263,7 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 1000;
   padding: 1rem;
 }
 
@@ -830,7 +841,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10001;
+  z-index: 1001;
   padding: 1.5rem;
 }
 
