@@ -85,6 +85,13 @@ const verifyCode = async () => {
     isLoading.value = true;
     errorMessage.value = '';
 
+    // Validate code effectively by trying to fetch transactions
+    // If code is invalid, this will throw 400
+    // We use a dummy ID just to trigger the validation logic in backend
+    const validationUserId = resolvedUserId.value || 'validation_check';
+    await paymentAPI.listUserTransactions(validationUserId, internalEmail.value, code.value);
+
+    // If successful, the code is valid
     emit('update:email', internalEmail.value);
     emit('update:name', internalName.value);
     emit('verified', {
@@ -93,7 +100,7 @@ const verifyCode = async () => {
       userId: resolvedUserId.value
     });
   } catch (err: any) {
-    const msg = err.response?.data?.message || err.message || 'Error al verificar el código.';
+    const msg = err.response?.data?.message || err.message || 'El código de verificación es incorrecto o ha expirado.';
     errorMessage.value = translateError(msg);
   } finally {
     isLoading.value = false;
