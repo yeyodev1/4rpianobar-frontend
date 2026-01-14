@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import paymentAPI from '@/services/payment';
 import paymentezCheckout from '@/services/paymentezCheckout';
 import type { CheckoutResponse } from '@/services/paymentezCheckout';
 import PaymentVerification from '@/components/payment/PaymentVerification.vue';
+import PaymentTransactionList from '@/components/payment/PaymentTransactionList.vue';
 
 const props = defineProps({
   userEmail: {
@@ -29,13 +30,17 @@ const props = defineProps({
   userName: {
     type: String,
     default: ''
+  },
+  autoHelp: {
+    type: Boolean,
+    default: false
   }
 });
 
 const emit = defineEmits(['success', 'error', 'cancel', 'requestHideModal', 'requestShowModal']);
 
 // State
-const step = ref<'identifying' | 'ready'>('identifying');
+const step = ref<'identifying' | 'ready' | 'transactions'>('identifying');
 const internalUserId = ref(props.userId);
 const internalEmail = ref(props.userEmail);
 const internalName = ref(props.userName);
@@ -43,6 +48,15 @@ const verificationCode = ref('');
 const isProcessing = ref(false);
 const errorMessage = ref('');
 const checkoutInitialized = ref(false);
+const helpRequested = ref(props.autoHelp);
+
+// Watch for autoHelp changes
+watch(() => props.autoHelp, (newVal) => {
+  helpRequested.value = newVal;
+  if (newVal && step.value !== 'transactions' && step.value !== 'identifying') {
+    if (step.value === 'ready') step.value = 'transactions';
+  }
+});
 
 // Initialize Checkout modal
 const initializeCheckout = async () => {
@@ -83,7 +97,8 @@ const handleVerified = (data: { email: string, code: string, userId?: string | n
     internalUserId.value = 'u_' + Date.now();
   }
 
-  step.value = 'ready';
+  // Always go to transaction list first after verification
+  step.value = 'transactions';
 };
 
 // Process payment with Checkout
@@ -177,8 +192,37 @@ onUnmounted(() => {
       />
     </div>
 
+    <!-- Step 3: Transaction List (Clean View) -->
+    <div v-else-if="step === 'transactions'">
+      <div class="transactions-header">
+        <h3 class="view-title">Mis Transacciones</h3>
+        <button v-if="!autoHelp" @click="step = 'ready'" class="btn-proceed-top">
+          Pagar ${{ amount }} <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+      
+      <PaymentTransactionList
+        :user-id="internalUserId"
+        :email="internalEmail"
+        :verification-code="verificationCode"
+      />
+
+      <div class="transactions-footer" v-if="autoHelp">
+        <button @click="$emit('cancel')" class="btn-cancel">
+          Cerrar
+        </button>
+      </div>
+    </div>
+
     <!-- Step 2: Ready to Pay -->
     <div v-else-if="step === 'ready'">
+        <!-- Help Link in Payment View -->
+        <div class="help-link-wrapper">
+           <button class="btn-text-help" @click="step = 'transactions'">
+             <i class="fa-solid fa-clock-rotate-left"></i>
+             Ver mis transacciones pasadas
+           </button>
+        </div>  
       <div class="payment-summary">
         <div class="summary-card">
           <div class="summary-header">
@@ -303,6 +347,110 @@ onUnmounted(() => {
     margin: 0;
   }
 }
+
+.transactions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+
+  .view-title {
+    font-family: 'Playfair Display', serif;
+    color: colors.$BRAND-PRIMARY;
+    font-size: 1.4rem;
+    margin: 0;
+  }
+}
+
+.btn-proceed-top {
+  background: colors.$BRAND-PRIMARY;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(colors.$BRAND-PRIMARY, 0.2);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(colors.$BRAND-PRIMARY, 0.3);
+  }
+}
+
+.transactions-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.help-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    color: colors.$BRAND-PRIMARY;
+    font-size: 1.4rem;
+    margin: 0;
+  }
+}
+
+.pending-reservation-banner {
+  background: rgba(colors.$BRAND-PRIMARY, 0.05);
+  border: 1px solid rgba(colors.$BRAND-PRIMARY, 0.2);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  .banner-content {
+    flex: 1;
+    font-size: 0.9rem;
+
+    strong {
+      color: colors.$BRAND-PRIMARY;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    p {
+      color: colors.$text-light;
+      margin: 0;
+      font-size: 0.85rem;
+    }
+  }
+}
+
+.btn-proceed-pay {
+  background: colors.$BRAND-PRIMARY;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  box-shadow: 0 4px 10px rgba(colors.$BRAND-PRIMARY, 0.2);
+
+  &:hover {
+    background: darken(colors.$BRAND-PRIMARY, 5%);
+    transform: translateY(-1px);
+  }
+}
+
 
 .summary-details {
   padding: 1.5rem;
