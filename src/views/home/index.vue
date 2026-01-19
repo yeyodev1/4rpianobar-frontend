@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import FeaturedDish from './FeaturedDish.vue'
 import HeroSection from './HeroSection.vue'
-import HeaderBar from '../../components/layout/HeaderBar.vue'
 import LocationsSection from './LocationsSection.vue'
 import AtmosphereSection from './AtmosphereSection.vue'
-import FoodGallery from './FoodGallery.vue'
 import FooterSection from './FooterSection.vue'
 </script>
 
@@ -77,28 +75,6 @@ import FooterSection from './FooterSection.vue'
         <p class="reasons-footer">Todas son buenas razones.</p>
       </div>
     </section>
-
-    <section class="events-cta">
-      <div class="container">
-        <h2>EVENTOS</h2>
-        <p>Cumpleaños, cenas, despedidas, reuniones, celebraciones.</p>
-        <p>Si quieres que tu noche se sienta distinta, 4R es un buen lugar para hacerlo.</p>
-        <a href="https://wa.me/593979279877?text=Quiero%20preguntar%20por%20eventos" target="_blank" class="cta-btn">
-          PREGUNTAR POR EVENTOS
-        </a>
-      </div>
-    </section>
-
-    <section class="booking-section" id="reservas">
-      <div class="container">
-        <h2>RESERVAS</h2>
-        <p>Las mesas no son infinitas. La noche sí, pero el espacio no.</p>
-        <p>Si quieres asegurarte tu lugar: Reserva por WhatsApp o Instagram.</p>
-        <a href="https://wa.me/593979279877" target="_blank" class="cta-btn">RESERVAR AHORA</a>
-      </div>
-    </section>
-
-    <FoodGallery />
   </main>
 
   <FooterSection />
