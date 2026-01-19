@@ -10,9 +10,9 @@ interface PaymentezConfig {
 }
 
 const DEFAULT_CONFIG: PaymentezConfig = {
-  environment: 'stg',
-  applicationCode: 'NUVEISTG-EC-CLIENT',
-  applicationKey: 'rvpKAv2tc49x6YL38fvtv5jJxRRiPs'
+  environment: (import.meta.env.VITE_NUVEI_ENV as 'stg' | 'prod') || 'prod',
+  applicationCode: import.meta.env.VITE_NUVEI_APP_CODE_CLIENT || 'PIANOBAR-EC-CLIENT',
+  applicationKey: import.meta.env.VITE_NUVEI_APP_KEY_CLIENT || 'WpPU7Nsf9IkJh27JPqbnhxSedzBYRb'
 };
 
 class PaymentezService {
