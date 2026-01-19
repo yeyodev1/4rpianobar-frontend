@@ -8,11 +8,9 @@ function toggleMenu() { menuOpen.value = !menuOpen.value }
 function closeMenu() { menuOpen.value = false }
 const router = useRouter()
 const route = useRoute()
-function gotoMenu() { closeMenu(); router.push({ name: 'menu' }) }
 function gotoEvents() { closeMenu(); router.push({ name: 'events' }) }
 function gotoHome() { closeMenu(); router.push({ name: 'home' }) }
 function gotoCorporateEvents() { closeMenu(); router.push({ name: 'corporate-events' }) }
-function gotoReservations() { closeMenu(); router.push({ name: 'reservations' }) }
 </script>
 
 <template>
@@ -26,10 +24,9 @@ function gotoReservations() { closeMenu(); router.push({ name: 'reservations' })
       </button>
       <div class="content">
         <button v-if="route.name !== 'home'" class="overlay__link" @click="gotoHome">INICIO</button>
-        <button v-if="route.name !== 'menu'" class="overlay__link" @click="gotoMenu">MENÚ</button>
+        <a href="https://drive.google.com/file/d/191kOyrBYhkcpR1BsyJsu16-L_yjgdgmY/view" target="_blank" class="overlay__link">MENÚ</a>
         <button v-if="route.name !== 'events'" class="overlay__link" @click="gotoEvents">EVENTOS</button>
         <button v-if="route.name !== 'corporate-events'" class="overlay__link" @click="gotoCorporateEvents">CORPORATIVO</button>
-        <button v-if="route.name !== 'reservations'" class="overlay__link" @click="gotoReservations">RESERVAS</button>
       </div>
     </div>
   </transition>
