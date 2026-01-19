@@ -1,7 +1,40 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+import hero1 from '@/assets/static/restaurant/hero.png'
+import hero2 from '@/assets/static/restaurant/hero2.jpg'
+import hero3 from '@/assets/static/restaurant/hero3.jpg'
+
+const images = [hero1, hero2, hero3]
+const currentImageIndex = ref(0)
+let intervalId: number | undefined
+
+const nextImage = () => {
+  currentImageIndex.value = (currentImageIndex.value + 1) % images.length
+}
+
+onMounted(() => {
+  intervalId = setInterval(nextImage, 5000)
+})
+
+onUnmounted(() => {
+  clearInterval(intervalId)
+})
+</script>
 
 <template>
   <section class="hero">
+    <div class="hero__carousel">
+      <transition-group name="fade">
+        <div
+          v-for="(img, index) in images"
+          :key="img"
+          v-show="currentImageIndex === index"
+          class="hero__slide"
+          :style="{ backgroundImage: `linear-gradient(rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.6)), url('${img}')` }"
+        ></div>
+      </transition-group>
+    </div>
+
     <div class="overlay-hero">
       <h1 class="title">SIEMPRE TIENES LA RAZÓN</h1>
       <div class="subtitle-container">
@@ -29,14 +62,33 @@
 .hero {
   position: relative;
   min-height: 90vh;
-  background-image: linear-gradient(rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.6)), url('@/assets/static/restaurant/hero.png');
-  background-size: cover;
-  background-position: center;
   display: grid;
   place-items: center;
+  overflow: hidden;
+}
+
+.hero__carousel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero__slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
 }
 
 .overlay-hero {
+  position: relative;
+  z-index: 2;
   text-align: center;
   padding: 24px;
 }
@@ -114,6 +166,17 @@
   background: rgba($accent-gold, 0.1);
 }
 
+/* Transition Effects */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 @media (min-width: 768px) {
   .overlay-hero .title {
     font-size: 56px;
@@ -137,4 +200,3 @@
   }
 }
 </style>
-
