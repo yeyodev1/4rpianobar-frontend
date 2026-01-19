@@ -1,40 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
-const props = defineProps({
-  showNewsletter: { type: Boolean, default: true },
-})
-
-const email = ref('')
-
-function sendToWhatsapp() {
-  const value = email.value.trim()
-  if (!value) return
-  const message = `Hola, mi correo es ${value}, deseo ser agregado para recibir novedades y ofertas exclusivas.`
-  const url = `https://wa.me/593979279877?text=${encodeURIComponent(message)}`
-  window.open(url, '_blank')
-}
+// Newsletter functionality removed as requested
 </script>
 
 <template>
   <footer class="footer">
-    <section class="footer__final-phrase">
-      <div class="footer__container">
-        <p>No es un bar.</p>
-        <p>No es una discoteca.</p>
-        <p>No es un restaurante.</p>
-        <p class="impact">Es el lugar donde decidiste salir y te fue mejor de lo que esperabas.</p>
-      </div>
-    </section>
 
-    <section v-if="props.showNewsletter" class="footer__newsletter">
+    <section class="footer__location">
       <div class="footer__container">
-        <h2 class="footer__title">NEWSLETTER</h2>
-        <p class="footer__subtitle">Suscríbete para recibir novedades, eventos y ofertas exclusivas.</p>
-        <div class="footer__form">
-          <input v-model="email" type="email" class="footer__input" placeholder="Tu correo electrónico" />
-          <button type="button" class="footer__btn" @click="sendToWhatsapp">Enviar</button>
-        </div>
+        <h2 class="footer__title">UBICACIÓN</h2>
+        <p class="footer__subtitle">Av. Los Arcos S/N y Vía Samborondón Km 1.5, Edificio Xima.</p>
+        <a href="https://maps.app.goo.gl/iTFETy142K3Ekk5k8" target="_blank" rel="noopener noreferrer" class="footer__btn map-btn">
+          VER EN MAPA <i class="fa-solid fa-location-dot"></i>
+        </a>
       </div>
     </section>
 
@@ -102,12 +79,13 @@ function sendToWhatsapp() {
     }
   }
 
-  &__newsletter {
+  &__location {
     background: $BRAND-GARNET;
     padding: 3rem 1rem;
     text-align: center;
     display: grid;
-    gap: 1rem;
+    gap: 1.5rem;
+    place-items: center;
   }
 
   &__title {
@@ -117,33 +95,20 @@ function sendToWhatsapp() {
     letter-spacing: 3px;
     font-size: 1.5rem;
     line-height: 1.2;
+    margin-bottom: 12px;
   }
 
   &__subtitle {
     color: $gray-300;
-    font-size: 0.95rem;
-  }
-
-  &__form {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  &__input {
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 1px solid rgba($white, 0.18);
-    background: rgba(0, 0, 0, 0.3);
-    color: $white;
-    outline: none;
+    font-size: 1rem;
+    margin-bottom: 24px;
   }
 
   &__btn {
-    width: 100%;
-    padding: 12px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
     border-radius: 10px;
     border: none;
     background: $BRAND-CREAM;
@@ -151,6 +116,7 @@ function sendToWhatsapp() {
     font-weight: 600;
     cursor: pointer;
     transition: background 200ms ease;
+    text-decoration: none;
   }
 
   &__btn:hover {
@@ -263,15 +229,6 @@ function sendToWhatsapp() {
   .footer {
     &__title {
       font-size: 2.25rem;
-    }
-
-    &__form {
-      grid-template-columns: minmax(280px, 520px) auto;
-      justify-content: center;
-    }
-
-    &__btn {
-      width: auto;
     }
 
     &__row--top {
