@@ -73,7 +73,7 @@ onMounted(() => {
   &__title {
     font-family: 'Playfair Display', serif;
     font-size: 2.5rem;
-    color: colors.$BRAND-PRIMARY;
+    color: colors.$accent-gold;
     margin-bottom: 1rem;
 
     @media (min-width: 768px) {
@@ -83,7 +83,7 @@ onMounted(() => {
 
   &__subtitle {
     font-size: 1.1rem;
-    color: colors.$text-light;
+    color: colors.$white;
     max-width: 600px;
     margin: 0 auto;
   }
