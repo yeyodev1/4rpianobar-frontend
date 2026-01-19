@@ -14,9 +14,9 @@
       <p class="card__text">
         Hay otros que llegan encendidos, perfumados, contados. Te los sirven, te los explican, los ves nacer. Y sí… saben tan bien como se ven.
       </p>
-      <RouterLink to="/menu" class="card__link" aria-label="Ver carta de tragos">
+      <a href="https://drive.google.com/file/d/191kOyrBYhkcpR1BsyJsu16-L_yjgdgmY/view" target="_blank" rel="noopener" class="card__link" aria-label="Ver carta de tragos">
         Ver carta <i class="fa-solid fa-arrow-right"></i>
-      </RouterLink>
+      </a>
     </div>
   </article>
 </template>
