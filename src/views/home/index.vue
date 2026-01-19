@@ -12,25 +12,24 @@ import FooterSection from './FooterSection.vue'
   <main>
     <section class="intro">
       <div class="intro__group">
-        <h2>¿QUÉ ES 4R?</h2>
+        <h2><i class="fa-solid fa-star"></i> Bienvenidos a 4R Piano Bar <i class="fa-solid fa-music"></i></h2>
         <p>
-          4R es ese lugar al que vas cuando no quieres lo de siempre. <br>
-          Cuando no te provoca ni la disco, ni el bar ruidoso, ni quedarte en casa. <br>
-          Cuando quieres música en vivo, algo que se sienta especial, un trago bien hecho y una noche que tenga historia.
-        </p>
-        <p>
-          Aquí hay piano. Hay voces en vivo. Hay cocteles. Hay gente celebrando cosas pequeñas y grandes. Y todo pasa muy cerca de ti.
+          El lugar donde la música cobra vida y cada noche es una experiencia única.
         </p>
       </div>
 
-      <div class="intro__group">
-        <h2>LA IDEA DETRÁS DE 4R</h2>
-        <p>
-          No necesitas una excusa para venir. No necesitas que sea viernes. No necesitas que sea tu cumpleaños.
-        </p>
-        <p>
-          Si quieres salir, esa ya es una razón. Y si eliges 4R, es una buena. Por eso aquí decimos: <strong>Siempre tienes la razón.</strong>
-        </p>
+      <div class="intro__info-grid">
+        <div class="info-card">
+          <h3><i class="fa-regular fa-clock"></i> Horarios de atención</h3>
+          <p><strong>Miércoles:</strong> 7:00 pm – 2:00 am</p>
+          <p><strong>Juev a Sab:</strong> 7:00 pm – 4:00 am</p>
+        </div>
+        
+        <div class="info-card">
+          <h3><i class="fa-solid fa-location-dot"></i> Ubicación</h3>
+          <p>Edificio Xima, local #02</p>
+          <p class="sub-text">(atrás de la Clínica Kenddy)</p>
+        </div>
       </div>
     </section>
 
@@ -59,22 +58,6 @@ import FooterSection from './FooterSection.vue'
     </section>
 
     <AtmosphereSection/>
-
-    <section class="reasons">
-      <div class="container">
-        <h2>PARA QUÉ VENIR</h2>
-        <p>A 4R vienes:</p>
-        <ul class="reasons-list">
-          <li>A celebrar algo</li>
-          <li>A olvidar algo</li>
-          <li>A impresionar a alguien</li>
-          <li>A cantar</li>
-          <li>A brindar</li>
-          <li>A salir sin motivo</li>
-        </ul>
-        <p class="reasons-footer">Todas son buenas razones.</p>
-      </div>
-    </section>
   </main>
 
   <FooterSection />
@@ -97,7 +80,7 @@ main {
 
 .intro__group h2 {
   font-family: $font-principal;
-  color: $BRAND-BURGUNDY;
+  color: $accent-gold;
   font-size: 1.6rem;
   line-height: 1.2;
   margin-bottom: 16px;
@@ -202,11 +185,61 @@ main {
   background: color.scale($BRAND-BURGUNDY, $lightness: 10%);
 }
 
+.intro__info-grid {
+  display: grid;
+  gap: 24px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.info-card {
+  background: rgba($white, 0.05);
+  border: 1px solid rgba($accent-gold, 0.3);
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+
+  h3 {
+    font-family: $font-principal;
+    color: $accent-gold;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+
+  p {
+    color: $white; // Better contrast than gray for import info
+    margin: 4px 0;
+    font-size: 1rem;
+
+    strong {
+      color: $accent-gold;
+    }
+  }
+
+  .sub-text {
+    font-size: 0.9rem;
+    color: $gray-400;
+  }
+}
+
 @media (min-width: 768px) {
   .intro {
     text-align: center;
     padding: 80px 24px;
     align-items: center;
+  }
+
+  .intro__info-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .intro__group p {

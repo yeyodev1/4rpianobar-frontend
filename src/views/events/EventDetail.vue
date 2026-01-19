@@ -162,7 +162,8 @@ const goBack = () => {
           <div class="event-additional-info">
             <div class="info-block" v-if="event.location">
               <h3><i class="fa-solid fa-location-dot"></i> Ubicación</h3>
-              <p>{{ event.location }}</p>
+              <p class="location-main">{{ event.location }}</p>
+              <p class="location-detail">Edificio Xima, local #02.<br>(atrás de la Clínica Kenddy)</p>
             </div>
             <div class="info-block" v-if="event.price">
               <h3><i class="fa-solid fa-ticket"></i> Precio</h3>
@@ -359,10 +360,17 @@ const goBack = () => {
       gap: 0.5rem;
     }
 
-    p {
+    p.location-main {
       font-size: 1.2rem;
       font-weight: 600;
       color: colors.$text-dark;
+      margin-bottom: 0.2rem;
+    }
+
+    p.location-detail {
+      font-size: 0.95rem;
+      color: colors.$text-light;
+      line-height: 1.4;
     }
   }
 }
