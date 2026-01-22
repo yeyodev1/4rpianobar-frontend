@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Storyblok from '@/services/storyblok';
 import ReservationModal from '@/components/ui/ReservationModal.vue';
@@ -15,6 +15,9 @@ const reservationMode = ref<'whatsapp' | 'paymentez' | 'help'>('whatsapp');
 const guestCount = ref(2);
 const isCheckoutOpen = ref(false); // Track if Checkout modal is open
 
+// Selected Zone Logic
+const selectedZoneName = ref<string>('');
+
 const incrementGuests = () => {
   if (guestCount.value < 20) guestCount.value++;
 };
@@ -25,13 +28,12 @@ const decrementGuests = () => {
 
 const whatsappDirectUrl = computed(() => {
   const peopleText = guestCount.value > 1 ? ` para ${guestCount.value} personas` : ' para 1 persona';
-  const text = `Hola, deseo reservar${peopleText} para el evento${event.value ? `: ${event.value.title}` : ''}.`;
+  const zoneText = selectedZoneName.value ? ` en zona ${selectedZoneName.value}` : '';
+  const text = `Hola, deseo reservar${peopleText}${zoneText} para el evento${event.value ? `: ${event.value.title}` : ''}.`;
   return `https://wa.me/593979279877?text=${encodeURIComponent(text)}`;
 });
 
-// Reutilizamos la lógica de mapeo que ya probamos en EventCard, 
-// pero adaptada aquí ya que necesitamos la data para poblar la vista completa.
-// En un futuro refactor, esta función podría ir a un `utils/transformers.ts`
+// Reutilizamos la lógica de mapeo que ya probamos en EventCard...
 const mapStoryToEvent = (story: any): Event => {
   const content = story.content;
   const dateObj = new Date(content.fecha || new Date());
@@ -79,7 +81,7 @@ const mapStoryToEvent = (story: any): Event => {
     time: time,
     description: content.description || '',
     imageUrl: imageUrl,
-    location: '4R Piano Bar', // Idealmente vendría del CMS
+    location: '4R Piano Bar',
     price: content.price ? `$${content.price}` : undefined,
     prices: prices.length > 0 ? prices : undefined
   };
@@ -94,11 +96,15 @@ const fetchEventDetail = async () => {
 
   try {
     loading.value = true;
-    // Asumimos que el slug en la URL corresponde al slug de Storyblok
     const story = await Storyblok.getEventBySlug(slug);
 
     if (story) {
       event.value = mapStoryToEvent(story);
+
+      // Select first zone by default if available
+      if (event.value?.prices && event.value.prices.length > 0) {
+        selectedZoneName.value = event.value.prices[0].zone;
+      }
     } else {
       error.value = 'Evento no encontrado';
     }
@@ -111,13 +117,14 @@ const fetchEventDetail = async () => {
 };
 
 const numericPrice = computed(() => {
-  if (event.value?.prices && event.value.prices.length > 0) {
-    // Return the lowest price as default for "from" logic or similar if needed,
-    // or just the first one. For now, let's take the first one or 0.
-    return event.value.prices[0]?.price || 0;
+  // If we have distinct zones, find the price of the selected zone
+  if (event.value?.prices && event.value.prices.length > 0 && selectedZoneName.value) {
+    const zone = event.value.prices.find(p => p.zone === selectedZoneName.value);
+    return zone ? zone.price : 0;
   }
+
+  // Fallback for single legacy price
   if (!event.value?.price) return 0;
-  // Extract number from string like "$15" or "$ 15.00"
   const price = event.value.price.replace(/[^\d.]/g, '');
   return parseFloat(price) || 0;
 });
@@ -137,16 +144,8 @@ const handleHelpRequest = () => {
   showReservationModal.value = true;
 };
 
-const handleHideModalForCheckout = () => {
-  console.log('[EventDetail] Hiding ReservationModal for Checkout');
-  isCheckoutOpen.value = true;
-  showReservationModal.value = false;
-};
-
-const handleShowModalAfterCheckout = () => {
-  console.log('[EventDetail] Showing ReservationModal after Checkout closed');
-  isCheckoutOpen.value = false;
-  showReservationModal.value = true;
+const onSelectZone = (zoneName: string) => {
+  selectedZoneName.value = zoneName;
 };
 
 onMounted(async () => {
@@ -197,19 +196,27 @@ const goBack = () => {
             </div>
             
             <div class="info-block" v-if="event.prices && event.prices.length">
-              <h3><i class="fa-solid fa-ticket"></i> Precios</h3>
-              <ul class="price-list">
-                <li v-for="p in event.prices" :key="p.zone" class="price-item">
-                  <div class="price-zone">{{ p.zone }}</div>
-                  <div class="price-values">
-                    <span class="price-total">${{ p.price }}</span>
-                    <span class="price-detail">
-                      (${{ p.price - p.cover }} consumibles + ${{ p.cover }} cover)
-                    </span>
+              <h3><i class="fa-solid fa-ticket"></i> Precios por Zona</h3>
+              <div class="zone-cards">
+                <div 
+                  v-for="p in event.prices" 
+                  :key="p.zone" 
+                  class="zone-card"
+                  :class="{ 'zone-card--selected': selectedZoneName === p.zone }"
+                  @click="onSelectZone(p.zone)"
+                >
+                  <div class="zone-header">
+                    <span class="radio-indicator"></span>
+                    <span class="zone-name">{{ p.zone }}</span>
                   </div>
-                </li>
-              </ul>
+                  <div class="zone-price">${{ p.price }}</div>
+                  <div class="zone-detail">
+                    (${{ p.price - p.cover }} consumibles + ${{ p.cover }} cover)
+                  </div>
+                </div>
+              </div>
             </div>
+            
             <div class="info-block" v-else-if="event.price">
               <h3><i class="fa-solid fa-ticket"></i> Precio</h3>
               <p>{{ event.price }}</p>
@@ -228,6 +235,17 @@ const goBack = () => {
                 <button @click="decrementGuests" :disabled="guestCount <= 1" class="btn-counter" aria-label="Disminuir">-</button>
                 <span class="guest-count">{{ guestCount }}</span>
                 <button @click="incrementGuests" :disabled="guestCount >= 20" class="btn-counter" aria-label="Aumentar">+</button>
+              </div>
+            </div>
+            
+            <div v-if="selectedZoneName" class="selected-summary">
+              <div class="summary-row">
+                <span>Zona:</span>
+                <strong>{{ selectedZoneName }}</strong>
+              </div>
+              <div class="summary-row">
+                <span>Total ({{ guestCount }} pers):</span>
+                <strong>${{ numericPrice * guestCount }}</strong>
               </div>
             </div>
 
@@ -253,7 +271,7 @@ const goBack = () => {
             </div>
           </div>
 
-          <!-- Modal para redirección a WhatsApp -->
+          <!-- Modal para redirección a WhatsApp / Pago -->
           <ReservationModal 
             :is-open="showReservationModal" 
             :event-name="event.title"
@@ -262,6 +280,7 @@ const goBack = () => {
             :guest-count="guestCount"
             :initial-mode="reservationMode"
             :event-price="numericPrice"
+            :ticket-type="selectedZoneName"
             @close="showReservationModal = false"
           />
         </aside>
@@ -602,48 +621,91 @@ const goBack = () => {
   }
 }
 
-.price-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
+.zone-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.price-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-direction: column;
-  padding: 0.8rem 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+.zone-card {
+  background: colors.$background-light;
+  border: 2px solid transparent;
+  padding: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 
-  &:last-child {
-    border-bottom: none;
+  &:hover {
+    background: darken(colors.$background-light, 3%);
+  }
+
+  &--selected {
+    border-color: colors.$BRAND-PRIMARY;
+    background: rgba(colors.$BRAND-PRIMARY, 0.05);
+
+    .radio-indicator {
+      background: colors.$BRAND-PRIMARY;
+      border-color: colors.$BRAND-PRIMARY;
+      box-shadow: inset 0 0 0 3px white;
+    }
   }
 }
 
-.price-zone {
+.zone-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.radio-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid colors.$gray-300;
+  display: inline-block;
+  transition: all 0.2s;
+}
+
+.zone-name {
   font-weight: 700;
   color: colors.$text-dark;
   font-size: 1rem;
+}
+
+.zone-price {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: colors.$BRAND-PRIMARY;
+  margin-left: 2.1rem;
+  /* align with text */
   margin-bottom: 0.2rem;
 }
 
-.price-values {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.price-total {
-  font-weight: 700;
-  color: colors.$BRAND-PRIMARY;
-  font-size: 1.1rem;
-}
-
-.price-detail {
+.zone-detail {
   font-size: 0.85rem;
   color: colors.$text-light;
+  margin-left: 2.1rem;
+}
+
+.selected-summary {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+
+    &:last-child {
+      margin-bottom: 0;
+      padding-top: 0.5rem;
+      border-top: 1px dashed rgba(255, 255, 255, 0.3);
+      font-size: 1.1rem;
+    }
+  }
 }
 </style>
