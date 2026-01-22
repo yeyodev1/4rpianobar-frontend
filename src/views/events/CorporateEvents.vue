@@ -159,7 +159,7 @@ const dinnerDetails = {
       <transition name="fade" mode="out-in">
         <div v-if="activeTab === 'talleres'" key="talleres" class="tab-content">
           <div class="intro-image-container">
-            <img src="@/assets/static/corporate/lobby.jpg" alt="Talleres y Capacitaciones" class="intro-img">
+            <img src="https://res.cloudinary.com/dpimsaaa4/image/upload/v1769118461/Fotos_Web_Corporativo_wdbfdn.png" alt="Talleres y Capacitaciones" class="intro-img">
           </div>
           <div class="intro-text">
             <h2>¿Cansado de los salones de hotel fríos?</h2>
@@ -202,7 +202,7 @@ const dinnerDetails = {
               </ul>
             </div>
             <div class="menu-category">
-              <img src="@/assets/static/restaurant/gourmet-breakfast.png" alt="Brunch" class="category-img">
+              <img src="https://res.cloudinary.com/dpimsaaa4/image/upload/v1769118680/Brunch_Foto_uf2vs8.jpg" alt="Brunch" class="category-img">
               <h3>OPCIONES DE BRUNCH</h3>
               <ul>
                 <li v-for="option in brunchOptions" :key="option">{{ option }}</li>
@@ -224,7 +224,7 @@ const dinnerDetails = {
         <!-- Celebrations Section -->
         <div v-else key="celebraciones" class="tab-content">
           <div class="intro-image-container">
-            <img src="@/assets/static/corporate/persona.jpg" alt="Celebraciones" class="intro-img">
+            <img src="@/assets/static/corporate/lobby.jpg" alt="Celebraciones" class="intro-img">
           </div>
           <div class="intro-text">
             <h2>Celebre sus momentos especiales</h2>
@@ -326,7 +326,7 @@ const dinnerDetails = {
 
 .hero-corporate {
   height: 60vh;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('@/assets/static/restaurant/hero.png'); // Default for now
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://res.cloudinary.com/dpimsaaa4/image/upload/v1769118078/Portada_Corporativa_r4dgb0.jpg');
   background-size: cover;
   background-position: center;
   display: flex;
