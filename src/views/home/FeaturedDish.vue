@@ -9,12 +9,9 @@
     <div class="card__content">
       <h3 class="card__title">LOS TRAGOS</h3>
       <p class="card__text">
-        Los tragos no son solo para tomar. Son parte del show. Hay clásicos bien hechos. Hay cocteles que salen humeando.
+        Creemos que un buen trago debe ser una experiencia completa. Por eso, en 4R Piano Bar nos esmeramos en el detalle: cócteles que humean, aromas que envuelven y presentaciones que cautivan.
       </p>
-      <p class="card__text">
-        Hay otros que llegan encendidos, perfumados, contados. Te los sirven, te los explican, los ves nacer. Y sí… saben tan bien como se ven.
-      </p>
-      <a href="https://drive.google.com/file/d/191kOyrBYhkcpR1BsyJsu16-L_yjgdgmY/view" target="_blank" rel="noopener" class="card__link" aria-label="Ver carta de tragos">
+      <a href="https://drive.google.com/drive/folders/1-4bBthktrC9y5F-Up-IPKWXJQwU0i-_h?usp=sharing" target="_blank" rel="noopener" class="card__link" aria-label="Ver carta de tragos">
         Ver carta <i class="fa-solid fa-arrow-right"></i>
       </a>
     </div>
