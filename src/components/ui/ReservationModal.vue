@@ -221,7 +221,7 @@ onMounted(() => {
                   :user-email="transactionData?.email || ''"
                   :amount="totalAmount"
                   :guest-count="guestCount"
-                  :description="'Reserva para: ' + eventName"
+                  :description="'Reserva para: ' + eventName + (ticketType ? ' - ' + ticketType : '')"
                   @success="handlePaymentSuccess"
                   @cancel="currentMode = 'whatsapp'"
                   @request-hide-modal="handleRequestHide"

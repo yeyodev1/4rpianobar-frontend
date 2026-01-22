@@ -102,8 +102,9 @@ const fetchEventDetail = async () => {
       event.value = mapStoryToEvent(story);
 
       // Select first zone by default if available
-      if (event.value?.prices && event.value.prices.length > 0) {
-        selectedZoneName.value = event.value.prices[0].zone;
+      const prices = event.value?.prices;
+      if (prices && prices.length > 0) {
+        selectedZoneName.value = prices[0]?.zone || '';
       }
     } else {
       error.value = 'Evento no encontrado';
@@ -291,6 +292,7 @@ const goBack = () => {
 
 <style lang="scss" scoped>
 @use '@/styles/colorVariables.module.scss' as colors;
+@use 'sass:color';
 
 .event-detail {
   min-height: 100vh;
@@ -636,7 +638,7 @@ const goBack = () => {
   transition: all 0.2s ease;
 
   &:hover {
-    background: darken(colors.$background-light, 3%);
+    background: color.scale(colors.$background-light, $lightness: -3%);
   }
 
   &--selected {
