@@ -36,19 +36,12 @@ onUnmounted(() => {
     </div>
 
     <div class="overlay-hero">
-      <h1 class="title">SIEMPRE TIENES LA RAZÓN</h1>
-      <div class="subtitle-container">
-        <p class="subtitle">Salir hoy.</p>
-        <p class="subtitle">Brindar hoy.</p>
-        <p class="subtitle">Celebrar hoy.</p>
-        <p class="subtitle">Venir a 4R.</p>
-        <p class="subtitle-highlight">Y sí: es una buena idea.</p>
-      </div>
+      <h1 class="title">AQUÍ SIEMPRE TIENES LA RAZÓN</h1>
       <div class="hero__actions">
         <a href="https://wa.me/593979279877" target="_blank" class="hero__btn hero__btn--primary">
           RESERVAR MESA
         </a>
-        <a href="#cartelera" class="hero__btn hero__btn--secondary">
+        <a href="https://drive.google.com/drive/folders/1gtrJAJrdyjvYTUh2Vtr1ekkO97b2eLoG?usp=sharing" target="_blank" class="hero__btn hero__btn--secondary">
           VER CARTELERA
         </a>
       </div>
