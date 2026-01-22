@@ -263,36 +263,46 @@ const dinnerDetails = {
 
           <!-- Menu Options for Celebrations -->
           <div class="menu-sections">
-            <div class="menu-category full-width">
+            <!-- Bocaditos Card -->
+            <div class="menu-category">
               <h3>OPCIONES DE BOCADITOS</h3>
               <ul class="chips-list">
                 <li v-for="snack in snackOptions" :key="snack">{{ snack }}</li>
               </ul>
             </div>
             
-            <div class="menu-category full-width dinner-menu">
-              <img src="@/assets/static/restaurant/elegant-dinner.png" alt="Cena" class="category-img large">
-              <h3>OPCIONES DE CENA</h3>
-              <div class="dinner-grid">
-                <div class="dinner-col">
-                  <h4>ENTRADAS</h4>
-                  <ul><li v-for="i in dinnerDetails.entradas" :key="i">{{ i }}</li></ul>
-                  <h4>PROTEÍNAS</h4>
-                  <ul><li v-for="i in dinnerDetails.proteinas" :key="i">{{ i }}</li></ul>
-                </div>
-                <div class="dinner-col">
+            <!-- Cena Part 1: Main -->
+            <div class="menu-category">
+              <img src="@/assets/static/restaurant/elegant-dinner.png" alt="Cena" class="category-img">
+              <h3>CENA: PLATOS FUERTES</h3>
+              <div class="dinner-group">
+                <h4>ENTRADAS</h4>
+                <ul><li v-for="i in dinnerDetails.entradas" :key="i">{{ i }}</li></ul>
+                <h4>PROTEÍNAS</h4>
+                <ul><li v-for="i in dinnerDetails.proteinas" :key="i">{{ i }}</li></ul>
+              </div>
+            </div>
+
+            <!-- Cena Part 2: Sides -->
+            <div class="menu-category">
+               <h3>CENA: GUARNICIONES</h3>
+               <div class="dinner-group">
                   <h4>CARBOHIDRATOS</h4>
                   <ul><li v-for="i in dinnerDetails.carbohidratos" :key="i">{{ i }}</li></ul>
                   <h4>ACOMPAÑANTES</h4>
                   <ul><li v-for="i in dinnerDetails.acompanantes" :key="i">{{ i }}</li></ul>
-                </div>
-                <div class="dinner-col">
+               </div>
+            </div>
+
+            <!-- Cena Part 3: Fresh & Sweet -->
+            <div class="menu-category">
+               <h3>CENA: FRESCOS Y DULCES</h3>
+               <div class="dinner-group">
                   <h4>ENSALADAS</h4>
                   <ul><li v-for="i in dinnerDetails.ensaladas" :key="i">{{ i }}</li></ul>
                   <h4>POSTRE</h4>
                   <ul><li v-for="i in dinnerDetails.postres" :key="i">{{ i }}</li></ul>
-                </div>
-              </div>
+               </div>
             </div>
           </div>
         </div>
@@ -748,29 +758,22 @@ const dinnerDetails = {
   }
 }
 
-.dinner-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  /* Reduced min width */
-  gap: 30px;
+.dinner-group {
+  h4 {
+    color: $BRAND-CREAM;
+    font-size: 0.9rem;
+    margin: 1.5rem 0 1rem;
+    letter-spacing: 2px;
+    border-left: 3px solid $BRAND-CREAM;
+    padding-left: 10px;
 
-  .dinner-col {
-    h4 {
-      color: $BRAND-CREAM;
-      font-size: 0.9rem;
-      margin: 1.5rem 0 1rem;
-      letter-spacing: 2px;
-      border-left: 3px solid $BRAND-CREAM;
-      padding-left: 10px;
-
-      &:first-child {
-        margin-top: 0;
-      }
+    &:first-child {
+      margin-top: 0;
     }
+  }
 
-    ul li {
-      font-size: 0.9rem;
-    }
+  ul li {
+    font-size: 0.9rem;
   }
 }
 
