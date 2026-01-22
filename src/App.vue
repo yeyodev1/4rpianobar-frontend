@@ -24,7 +24,7 @@ function gotoCorporateEvents() { closeMenu(); router.push({ name: 'corporate-eve
       </button>
       <div class="content">
         <button v-if="route.name !== 'home'" class="overlay__link" @click="gotoHome">INICIO</button>
-        <a href="https://drive.google.com/file/d/191kOyrBYhkcpR1BsyJsu16-L_yjgdgmY/view" target="_blank" class="overlay__link">MENÚ</a>
+        <a href="https://drive.google.com/drive/folders/1-4bBthktrC9y5F-Up-IPKWXJQwU0i-_h?usp=sharing" target="_blank" class="overlay__link">MENÚ</a>
         <button v-if="route.name !== 'events'" class="overlay__link" @click="gotoEvents">EVENTOS</button>
         <button v-if="route.name !== 'corporate-events'" class="overlay__link" @click="gotoCorporateEvents">CORPORATIVO</button>
       </div>
