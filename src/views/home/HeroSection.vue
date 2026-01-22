@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import hero1 from '@/assets/static/restaurant/hero.png'
+const hero1 = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1769120623/Foto_3_de_FOTOS_WEB_ab65vz.png'
 import hero2 from '@/assets/static/restaurant/hero2.jpg'
 import hero3 from '@/assets/static/restaurant/hero3.jpg'
 
