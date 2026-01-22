@@ -281,6 +281,7 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 @use '@/styles/colorVariables.module.scss' as colors;
+@use 'sass:color';
 
 .paymentez-checkout-wrapper {
   width: 100%;
@@ -330,7 +331,7 @@ onUnmounted(() => {
 }
 
 .summary-header {
-  background: linear-gradient(135deg, colors.$BRAND-PRIMARY 0%, darken(colors.$BRAND-PRIMARY, 10%) 100%);
+  background: linear-gradient(135deg, colors.$BRAND-PRIMARY 0%, color.scale(colors.$BRAND-PRIMARY, $lightness: -10%) 100%);
   color: white;
   padding: 1.2rem;
   display: flex;
@@ -446,7 +447,7 @@ onUnmounted(() => {
   box-shadow: 0 4px 10px rgba(colors.$BRAND-PRIMARY, 0.2);
 
   &:hover {
-    background: darken(colors.$BRAND-PRIMARY, 5%);
+    background: color.scale(colors.$BRAND-PRIMARY, $lightness: -5%);
     transform: translateY(-1px);
   }
 }
@@ -531,7 +532,7 @@ onUnmounted(() => {
   gap: 0.7rem;
 
   &:hover:not(:disabled) {
-    background: darken(colors.$BRAND-PRIMARY, 5%);
+    background: color.scale(colors.$BRAND-PRIMARY, $lightness: -5%);
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(colors.$BRAND-PRIMARY, 0.4);
   }
