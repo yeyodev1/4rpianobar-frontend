@@ -1,28 +1,75 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, onMounted } from 'vue';
+import Storyblok from '@/services/storyblok';
+import type { Event } from '@/types/event';
 
-const event = {
-  slug: 'show-tropical-en-vivo',
-  date: '30 DE ENERO',
-  title: 'Show Tropical en Vivo',
-  description: 'Empieza el Show trae un espectáculo especial de bailarines profesionales de salsa, que encenderán la pista con coreografías llenas de sabor, fuerza y movimiento. Después del show de baile, la noche continúa con un artista en vivo, creando el ambiente perfecto para seguir disfrutando, cantar, bailar y vivir una experiencia completa. Una noche donde el espectáculo se vive desde el primer minuto, música y show… todo en una sola noche',
-  image: 'https://a.storyblok.com/f/289340927670052/1080x1350/d1e996775e/arte-enero-30.png',
-  prices: [
-    { zone: 'Terraza', price: 25, cover: 5 },
-    { zone: 'Salón Principal', price: 35, cover: 5 },
-    { zone: 'VIP', price: 40, cover: 2 }
-  ]
+const events = ref<Event[]>([]);
+const loading = ref(true);
+const error = ref<string | null>(null);
+
+const mapStoryToEvent = (story: any): Event => {
+  const content = story.content;
+  const dateObj = new Date(content.fecha || new Date());
+
+  // Format: "30 ENERO" (approximate to previous look)
+  const day = dateObj.getDate();
+  const month = dateObj.toLocaleDateString('es-ES', { month: 'long' }).toUpperCase();
+  const formattedDate = `${day} ${month}`;
+
+  const time = dateObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+  let imageUrl = '';
+  if (content.foto) {
+    if (typeof content.foto === 'string') imageUrl = content.foto;
+    else if (content.foto.filename) imageUrl = content.foto.filename;
+  }
+
+  const prices = [];
+  if (content.priceTerraza) {
+    prices.push({ zone: 'Terraza', price: parseFloat(content.priceTerraza), cover: parseFloat(content.priceTerrazaCover) || 0 });
+  }
+  if (content.priceSalonPrincipal) {
+    prices.push({ zone: 'Salón Principal', price: parseFloat(content.priceSalonPrincipal), cover: parseFloat(content.priceSalonPrincipalCover) || 0 });
+  }
+  if (content.priceVip) {
+    prices.push({ zone: 'VIP', price: parseFloat(content.priceVip), cover: parseFloat(content.priceVipCover) || 0 });
+  }
+
+  return {
+    id: story.uuid,
+    slug: story.slug,
+    title: content.title || story.name,
+    date: formattedDate,
+    time: time,
+    description: content.description || '',
+    imageUrl: imageUrl,
+    prices: prices.length ? prices : undefined,
+    price: content.price
+  };
 };
 
-const processedPrices = computed(() => {
-  return event.prices.map(p => {
-    const consumable = p.price - p.cover;
-    return {
-      zone: p.zone,
-      text: `$${p.price} ($${consumable} consumibles y $${p.cover} cover)`
-    };
-  });
+const fetchEvents = async () => {
+  try {
+    loading.value = true;
+    const stories = await Storyblok.getEvents();
+    events.value = stories.map(mapStoryToEvent);
+  } catch (e) {
+    console.error(e);
+    error.value = 'No se pudieron cargar los eventos.';
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchEvents();
 });
+
+// Helper to format price text for display
+const formatPriceText = (p: { price: number; cover: number }) => {
+  const consumable = p.price - p.cover;
+  return `$${p.price} ($${consumable} consumibles y $${p.cover} cover)`;
+};
 </script>
 
 <template>
@@ -32,10 +79,16 @@ const processedPrices = computed(() => {
       <p class="events-page__subtitle">Descubre las experiencias exclusivas que hemos preparado para ti.</p>
     </div>
 
-    <section class="events-page__grid icon-center">
-      <article class="event-card">
+    <div v-if="loading" class="state-message">Cargando eventos...</div>
+    <div v-else-if="error" class="state-message error">{{ error }}</div>
+
+    <section v-else class="events-page__grid icon-center">
+      <div v-if="events.length === 0" class="state-message">No hay eventos próximos.</div>
+      
+      <article v-for="event in events" :key="event.id" class="event-card">
         <div class="event-card__image-wrapper">
-          <img :src="event.image" :alt="event.title" class="event-card__image" />
+          <img v-if="event.imageUrl" :src="event.imageUrl" :alt="event.title" class="event-card__image" />
+          <div v-else class="event-card__image-placeholder"></div>
         </div>
         
         <div class="event-card__content">
@@ -43,13 +96,17 @@ const processedPrices = computed(() => {
             <h2 class="event-title">{{ event.title }}</h2>
             <p class="event-desc">{{ event.description }}</p>
             
-            <div class="event-prices">
+            <div class="event-prices" v-if="event.prices && event.prices.length">
                 <h3>Precios:</h3>
                 <ul>
-                    <li v-for="p in processedPrices" :key="p.zone">
-                        <strong>{{ p.zone }}:</strong> {{ p.text }}
+                    <li v-for="p in event.prices" :key="p.zone">
+                        <strong>{{ p.zone }}:</strong> {{ formatPriceText(p) }}
                     </li>
                 </ul>
+            </div>
+            <div class="event-prices" v-else-if="event.price">
+               <h3>Precio:</h3>
+               <p>{{ event.price }}</p>
             </div>
             
             <router-link :to="{ name: 'event-detail', params: { slug: event.slug } }" class="event-cta">
@@ -92,7 +149,20 @@ const processedPrices = computed(() => {
 
   &__grid {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+  }
+}
+
+.state-message {
+  color: colors.$white;
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 2rem;
+
+  &.error {
+    color: #ff6b6b;
   }
 }
 
@@ -126,6 +196,12 @@ const processedPrices = computed(() => {
     height: 100%;
     object-fit: cover;
     display: block;
+  }
+
+  &__image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
   }
 
   &__content {

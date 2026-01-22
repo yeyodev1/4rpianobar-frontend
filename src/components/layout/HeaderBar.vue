@@ -18,7 +18,9 @@ const phoneLink = props.phoneHref || whatsappHref
         <a :href="whatsappHref" target="_blank" rel="noopener" class="reserve">RESERVAR AHORA</a>
       </div>
       <div class="center">
-        <img src="@/assets/static/logo-light.png" alt="4R Piano Bar" class="logo-horizontal" />
+        <router-link :to="{ name: 'home' }">
+          <img src="@/assets/static/logo-light.png" alt="4R Piano Bar" class="logo-horizontal" />
+        </router-link>
       </div>
       <div class="right">
         <a :href="phoneLink" target="_blank" rel="noopener" aria-label="WhatsApp" class="icon">
