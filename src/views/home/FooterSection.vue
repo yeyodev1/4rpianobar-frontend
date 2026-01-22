@@ -20,21 +20,21 @@
         <div class="footer__row footer__row--top">
           <span class="footer__copy">© 2025 4R Piano Bar</span>
           <div class="footer__socials">
-            <a href="https://www.facebook.com/4Rpianobar.ec" aria-label="Facebook" class="footer__social"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/4rpianobar.ec/" aria-label="Instagram" class="footer__social"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.facebook.com/4Rpianobar.ec" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="footer__social"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/4rpianobar.ec/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="footer__social"><i class="fa-brands fa-instagram"></i></a>
+            <!-- Added Socials -->
+            <a href="https://www.linkedin.com/company/4r-piano-bar/posts/?feedView=all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="footer__social"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="footer__social"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://www.tiktok.com/@4r.piano.bar" target="_blank" rel="noopener noreferrer" aria-label="TikTok" class="footer__social"><i class="fa-brands fa-tiktok"></i></a>
           </div>
         </div>
 
         <div class="footer__legal">
-          <span class="footer__legal-item">Razón Social: <strong>4REGIONES S.A.S.</strong></span>
+          <span class="footer__legal-item">Dirección: Av. Los Arcos S/N y Vía Samborondón Km 1.5, Edificio Xima, Oficina 002, Samborondón.</span>
           <span class="footer__legal-sep">·</span>
-          <span class="footer__legal-item">RUC: 0993258571001</span>
+          <span class="footer__legal-item">Teléfono: <a href="tel:+593979279877" class="footer__legal-link">+593 97 927 9877</a></span>
           <span class="footer__legal-sep">·</span>
-          <span class="footer__legal-item">Dirección: Av. Los Arcos S/N y Vía Samborondón Km 1.5, Edificio Xima, Oficina 002, Samborondón, Guayas, Ecuador.</span>
-          <span class="footer__legal-sep">·</span>
-          <span class="footer__legal-item">Teléfono: <a href="tel:+593992950939" class="footer__legal-link">+593 99 295 0939</a></span>
-          <span class="footer__legal-sep">·</span>
-          <span class="footer__legal-item">Correos: <a href="mailto:4rpianobar@gmail.com" class="footer__legal-link">4rpianobar@gmail.com</a> | <a href="mailto:gerencia@4rpianobar.com" class="footer__legal-link">gerencia@4rpianobar.com</a></span>
+          <span class="footer__legal-item">Correo: <a href="mailto:servicio@4rpianobar.com" class="footer__legal-link">servicio@4rpianobar.com</a></span>
         </div>
 
         <div class="footer__row footer__dev">
