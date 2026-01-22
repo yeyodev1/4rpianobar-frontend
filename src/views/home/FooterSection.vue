@@ -24,7 +24,7 @@
             <a href="https://www.instagram.com/4rpianobar.ec/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="footer__social"><i class="fa-brands fa-instagram"></i></a>
             <!-- Added Socials -->
             <a href="https://www.linkedin.com/company/4r-piano-bar/posts/?feedView=all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="footer__social"><i class="fa-brands fa-linkedin-in"></i></a>
-            <a href="#" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="footer__social"><i class="fa-brands fa-youtube"></i></a>
+            <a href="https://www.youtube.com/@4RPIANOBARTV" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="footer__social"><i class="fa-brands fa-youtube"></i></a>
             <a href="https://www.tiktok.com/@4r.piano.bar" target="_blank" rel="noopener noreferrer" aria-label="TikTok" class="footer__social"><i class="fa-brands fa-tiktok"></i></a>
           </div>
         </div>

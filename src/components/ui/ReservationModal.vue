@@ -207,7 +207,7 @@ onMounted(() => {
               <div class="modal-body modal-body--form">
                 <PaymentezCheckoutForm 
                   :user-id="transactionData?.userId || 'u_' + Date.now()" 
-                  :user-email="transactionData?.email || 'cliente@example.com'"
+                  :user-email="transactionData?.email || ''"
                   :amount="totalAmount"
                   :guest-count="guestCount"
                   :description="'Reserva para: ' + eventName"
