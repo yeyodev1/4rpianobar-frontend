@@ -48,6 +48,30 @@ const mapStoryToEvent = (story: any): Event => {
     }
   }
 
+  const prices = [];
+
+  if (content.priceTerraza) {
+    prices.push({
+      zone: 'Terraza',
+      price: parseFloat(content.priceTerraza) || 0,
+      cover: parseFloat(content.priceTerrazaCover) || 0
+    });
+  }
+  if (content.priceSalonPrincipal) {
+    prices.push({
+      zone: 'Salón Principal',
+      price: parseFloat(content.priceSalonPrincipal) || 0,
+      cover: parseFloat(content.priceSalonPrincipalCover) || 0
+    });
+  }
+  if (content.priceVip) {
+    prices.push({
+      zone: 'VIP',
+      price: parseFloat(content.priceVip) || 0,
+      cover: parseFloat(content.priceVipCover) || 0
+    });
+  }
+
   return {
     id: story.uuid,
     title: content.title || story.name,
@@ -56,7 +80,8 @@ const mapStoryToEvent = (story: any): Event => {
     description: content.description || '',
     imageUrl: imageUrl,
     location: '4R Piano Bar', // Idealmente vendría del CMS
-    price: content.price ? `$${content.price}` : undefined
+    price: content.price ? `$${content.price}` : undefined,
+    prices: prices.length > 0 ? prices : undefined
   };
 };
 
@@ -86,6 +111,11 @@ const fetchEventDetail = async () => {
 };
 
 const numericPrice = computed(() => {
+  if (event.value?.prices && event.value.prices.length > 0) {
+    // Return the lowest price as default for "from" logic or similar if needed,
+    // or just the first one. For now, let's take the first one or 0.
+    return event.value.prices[0]?.price || 0;
+  }
   if (!event.value?.price) return 0;
   // Extract number from string like "$15" or "$ 15.00"
   const price = event.value.price.replace(/[^\d.]/g, '');
@@ -165,7 +195,22 @@ const goBack = () => {
               <p class="location-main">{{ event.location }}</p>
               <p class="location-detail">Edificio Xima, local #02.<br>(atrás de la Clínica Kenddy)</p>
             </div>
-            <div class="info-block" v-if="event.price">
+            
+            <div class="info-block" v-if="event.prices && event.prices.length">
+              <h3><i class="fa-solid fa-ticket"></i> Precios</h3>
+              <ul class="price-list">
+                <li v-for="p in event.prices" :key="p.zone" class="price-item">
+                  <div class="price-zone">{{ p.zone }}</div>
+                  <div class="price-values">
+                    <span class="price-total">${{ p.price }}</span>
+                    <span class="price-detail">
+                      (${{ p.price - p.cover }} consumibles + ${{ p.cover }} cover)
+                    </span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="info-block" v-else-if="event.price">
               <h3><i class="fa-solid fa-ticket"></i> Precio</h3>
               <p>{{ event.price }}</p>
             </div>
@@ -186,7 +231,7 @@ const goBack = () => {
               </div>
             </div>
 
-            <button v-if="event.price" @click="handleBuyTicket" class="btn-reserve btn-pay">
+            <button v-if="event.price || (event.prices && event.prices.length > 0)" @click="handleBuyTicket" class="btn-reserve btn-pay">
               <i class="fa-regular fa-credit-card"></i> Pagar con Tarjeta / Reservar
             </button>
 
@@ -555,5 +600,50 @@ const goBack = () => {
   to {
     transform: rotate(360deg);
   }
+}
+
+.price-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.price-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: column;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.price-zone {
+  font-weight: 700;
+  color: colors.$text-dark;
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+
+.price-values {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.price-total {
+  font-weight: 700;
+  color: colors.$BRAND-PRIMARY;
+  font-size: 1.1rem;
+}
+
+.price-detail {
+  font-size: 0.85rem;
+  color: colors.$text-light;
 }
 </style>
