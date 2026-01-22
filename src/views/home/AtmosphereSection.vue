@@ -2,8 +2,8 @@
 type AtmosphereImage = { src: string; alt: string }
 
 const images: AtmosphereImage[] = [
-  { src: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171204/Foto_001_5_qtz4ad.jpg', alt: 'Cena entre amigos con bengalas' },
-  { src: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171485/Imagen_002_1_nkcu4w.jpg', alt: 'Show de bailarina de fuego' }
+  { src: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1769113660/Fotos_Web_2_kr3idc.jpg', alt: 'Cena entre amigos con bengalas' },
+  { src: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1769113797/Fotos_Web_1_im305r.jpg', alt: 'Amigos comiendo en mesa' }
 ]
 </script>
 
@@ -11,9 +11,7 @@ const images: AtmosphereImage[] = [
   <section class="atmosphere">
     <h2 class="atmosphere__title">LA EXPERIENCIA</h2>
     <div class="atmosphere__description">
-      <p>La noche no entra golpeando. Empieza suave. Llegas, te sientas, pides algo de tomar. Suena el piano. Alguien canta.</p>
-      <p>Luego el ambiente cambia. Las mesas se acercan. Las voces se sueltan. Los brindis empiezan.</p>
-      <p>Y cuando te das cuenta, ya no estás saliendo… estás dentro de la noche. <strong>Eso es 4R.</strong></p>
+      <p>Lo que pasa en 4R, solo lo saben quiénes están ahí. No esperes a que te cuenten cómo suena nuestra noche o a qué suena nuestro show. <br><strong>¡Vívelo tú mismo!</strong></p>
     </div>
     <div class="atmosphere__grid">
       <figure v-for="(img, idx) in images" :key="idx" class="atmosphere__card">
