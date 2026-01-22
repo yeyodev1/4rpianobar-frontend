@@ -8,4 +8,9 @@ export interface Event {
   location?: string;
   price?: string;
   slug?: string; // Add slug for routing
+  prices?: {
+    zone: string;
+    price: number;
+    cover: number;
+  }[];
 }
