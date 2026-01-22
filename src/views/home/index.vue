@@ -12,7 +12,7 @@ import FooterSection from './FooterSection.vue'
   <main>
     <section class="intro">
       <div class="intro__group">
-        <h2><i class="fa-solid fa-star"></i> Bienvenidos a 4R Piano Bar <i class="fa-solid fa-music"></i></h2>
+        <h2> Bienvenidos a 4R Piano Bar </h2>
         <p>
           El lugar donde la música cobra vida y cada noche es una experiencia única.
         </p>

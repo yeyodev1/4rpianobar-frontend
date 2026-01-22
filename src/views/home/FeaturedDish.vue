@@ -4,7 +4,7 @@
 <template>
   <article class="card">
     <div class="card__image-container">
-      <img src="https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169855/food2_bhirci.jpg" alt="Cocteles en 4R" class="card__image" />
+      <img src="https://res.cloudinary.com/dpimsaaa4/image/upload/v1769110887/Co%CC%81ctel_de_Autor_2_hht2wh.jpg" alt="Cocteles en 4R" class="card__image" />
     </div>
     <div class="card__content">
       <h3 class="card__title">LOS TRAGOS</h3>
