@@ -14,11 +14,12 @@ const activeTab = ref('talleres');
 
 const workshopPlans = [
   {
-    name: 'PLAN A',
-    aforo: '20 PERSONAS',
+    name: '4R Corporate Breakfast',
+    aforo: '35 PERSONAS',
+    minAforo: '15 personas',
     tiempo: '3 horas',
     horario: 'Mañana/Tarde',
-    price: '$$$$$',
+    price: '',
     includes: [
       'Salón Interior',
       'Desayuno y/o brunch',
@@ -28,11 +29,12 @@ const workshopPlans = [
     ]
   },
   {
-    name: 'PLAN B',
-    aforo: '20 PERSONAS',
+    name: '4R Corporate Lunch',
+    aforo: '35 PERSONAS',
+    minAforo: '15 personas',
     tiempo: '3 horas',
     horario: 'Mañana/Tarde',
-    price: '$$$$$',
+    price: '',
     includes: [
       'Salón Interior',
       'Almuerzo ejecutivo de 2 tiempos',
@@ -45,11 +47,12 @@ const workshopPlans = [
 
 const celebrationPlans = [
   {
-    name: 'PLAN A',
-    aforo: '20 PERSONAS',
+    name: '4R Black',
+    aforo: '75 PERSONAS',
+    minAforo: '25 personas',
     tiempo: 'Mínimo 4 horas',
     horario: 'No Prime',
-    price: '$$$$$',
+    price: '',
     includes: [
       'Salón Interior',
       '100 bocaditos a elegir',
@@ -59,11 +62,12 @@ const celebrationPlans = [
     ]
   },
   {
-    name: 'PLAN B',
-    aforo: '20 PERSONAS',
+    name: '4R Gold',
+    aforo: '75 PERSONAS',
+    minAforo: '25 personas',
     tiempo: 'Mínimo 4 horas',
     horario: 'No Prime',
-    price: '$$$$$',
+    price: '',
     includes: [
       'Salón Interior',
       'Cena de 3 tiempos',
@@ -76,7 +80,7 @@ const celebrationPlans = [
 
 const breakfastOptions = [
   'Bolón con queso, huevos revueltos y fruta picada',
-  'Tortilla de verde con queso, bistec de carne y fruta picada.',
+  'Tortilla de verde con queso, huevo frito y fruta picada.',
   'Tortilla de maíz con queso, salchicha cuencana y fruta picada.'
 ];
 
@@ -169,10 +173,11 @@ const dinnerDetails = {
                 <span class="price">{{ plan.price }}</span>
               </div>
               <ul class="plan-details">
-                <li><i class="fa-solid fa-users"></i> Aforo: {{ plan.aforo }} (Experiencias exclusivas)</li>
+                <li><i class="fa-solid fa-users"></i> Aforo: {{ plan.aforo }}</li>
                 <li><i class="fa-solid fa-clock"></i> Tiempo: {{ plan.tiempo }}</li>
                 <li><i class="fa-solid fa-calendar-day"></i> Horario: {{ plan.horario }}</li>
               </ul>
+              <p class="min-aforo" v-if="plan.minAforo">*Aforo de evento mínimo: {{ plan.minAforo }}</p>
               <div class="plan-includes">
                 <h4>Incluye:</h4>
                 <ul>
@@ -233,10 +238,11 @@ const dinnerDetails = {
                 <span class="price">{{ plan.price }}</span>
               </div>
               <ul class="plan-details">
-                <li><i class="fa-solid fa-users"></i> Aforo: {{ plan.aforo }} (Mayores a 9 personas)</li>
+                <li><i class="fa-solid fa-users"></i> Aforo: {{ plan.aforo }}</li>
                 <li><i class="fa-solid fa-clock"></i> Mínimo: {{ plan.tiempo }}</li>
                 <li><i class="fa-solid fa-calendar-day"></i> Horario: {{ plan.horario }}</li>
               </ul>
+              <p class="min-aforo" v-if="plan.minAforo">*Aforo de evento mínimo: {{ plan.minAforo }}</p>
               <div class="plan-includes">
                 <h4>Incluye:</h4>
                 <ul>
@@ -295,11 +301,16 @@ const dinnerDetails = {
       <!-- Contact Footer -->
       <section class="contact-section">
         <div class="contact-info">
-          <h3>SABOREA LA ELEGANCIA EN SAMBORONDÓN</h3>
+          <h3>Disfruta de la exclusividad de Samborondón</h3>
           <p>EDIFICIO XIMA PLANTA BAJA, LOCAL #2</p>
-          <a :href="whatsappHref" target="_blank" class="whatsapp-btn">
-            <i class="fa-brands fa-whatsapp"></i> +593 95 973 9088
-          </a>
+          <div class="contact-actions">
+            <a :href="whatsappHref" target="_blank" class="whatsapp-btn">
+              <i class="fa-brands fa-whatsapp"></i> +593 95 973 9088
+            </a>
+            <a href="mailto:comercial@4rpianobar.com" class="email-link">
+              <i class="fa-solid fa-envelope"></i> comercial@4rpianobar.com
+            </a>
+          </div>
         </div>
       </section>
     </main>
@@ -771,6 +782,36 @@ const dinnerDetails = {
 
   .plan-card {
     padding: 20px;
+  }
+}
+
+.min-aforo {
+  font-size: 0.85rem;
+  color: $accent-gold;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.contact-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+.email-link {
+  color: $BRAND-CREAM;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: color 0.3s;
+
+  &:hover {
+    color: $white;
   }
 }
 </style>
