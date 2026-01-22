@@ -12,7 +12,7 @@ import FooterSection from './FooterSection.vue'
   <main>
     <section class="intro">
       <div class="intro__group">
-        <h2> Bienvenidos a 4R Piano Bar </h2>
+        <h2> Bienvenidos a <span class="num-4">4</span>R Piano Bar </h2>
         <p>
           El lugar donde la música cobra vida y cada noche es una experiencia única.
         </p>
@@ -42,15 +42,15 @@ import FooterSection from './FooterSection.vue'
         <h2 class="section-title">CÓMO CAMBIA LA NOCHE</h2>
         <div class="phases-grid">
           <div class="phase-card">
-            <h3>Temprano</h3>
+            <h3>SPRITZ & DRINKS</h3>
             <p>Para conversar, empezar tranquilo, mirarse de cerca.</p>
           </div>
           <div class="phase-card">
-            <h3>Más tarde</h3>
+            <h3>FARRA</h3>
             <p>Para el show, el piano, los coros y los brindis.</p>
           </div>
           <div class="phase-card">
-            <h3>Muy tarde</h3>
+            <h3>AFTER</h3>
             <p>Para quedarte un rato más… aunque ya habías dicho que te ibas.</p>
           </div>
         </div>
@@ -69,6 +69,12 @@ import FooterSection from './FooterSection.vue'
 main {
   display: grid;
   gap: 48px;
+}
+
+.num-4 {
+  font-size: 1.25em;
+  /* Make the 4 slightly larger */
+  vertical-align: -1px;
 }
 
 .intro {
@@ -134,6 +140,12 @@ main {
   color: $accent-gold;
   margin-bottom: 12px;
   font-family: $font-principal;
+}
+
+.phase-card p {
+  color: $gray-300;
+  /* Ensure visibility */
+  font-size: 1rem;
 }
 
 .reasons h2,
