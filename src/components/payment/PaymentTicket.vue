@@ -25,6 +25,10 @@ const props = defineProps({
   showSuccessHeader: {
     type: Boolean,
     default: false
+  },
+  ticketType: {
+    type: String,
+    default: ''
   }
 });
 
@@ -61,10 +65,12 @@ const saveTicket = () => {
 
 const shareTicketWhatsApp = () => {
   const t = props.transaction;
+  const zoneText = props.ticketType ? `*Zona:* ${props.ticketType}\n` : '';
   const message = `*TICKET DE RESERVA - 4R PIANO BAR*\n\n` +
     `*Evento:* ${displayEventName.value}\n` +
     `*Fecha:* ${displayDate.value}\n` +
     `*Hora:* ${props.eventTime || 'N/A'}\n` +
+    zoneText +
     `*Cliente:* ${t.name || 'N/A'}\n` +
     `*Asistentes:* ${displayGuestCount.value} persona(s)\n` +
     `*Total Pagado:* $${t.amount} ${t.currency}\n` +
@@ -116,6 +122,10 @@ const shareTicketWhatsApp = () => {
           <div class="detail-item">
             <label>Personas</label>
             <span>{{ displayGuestCount }}</span>
+          </div>
+          <div class="detail-item" v-if="ticketType">
+            <label>Zona</label>
+            <span>{{ ticketType }}</span>
           </div>
           <div class="detail-item">
             <label>Total Pagado</label>
