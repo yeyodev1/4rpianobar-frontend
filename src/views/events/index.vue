@@ -1,30 +1,27 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import EventCard from '@/components/events/EventCard.vue';
-import Storyblok from '@/services/storyblok';
+import { computed } from 'vue';
 
-const stories = ref<any[]>([]);
-const loading = ref(true);
-const error = ref<string | null>(null);
-
-const fetchEvents = async () => {
-  try {
-    loading.value = true;
-    const data = await Storyblok.getEvents();
-
-    if (data) {
-      stories.value = data;
-    }
-  } catch (err) {
-    console.error('Error fetching events:', err);
-    error.value = 'No se pudieron cargar los eventos. Por favor, intenta de nuevo más tarde.';
-  } finally {
-    loading.value = false;
-  }
+const event = {
+  slug: 'show-tropical-en-vivo',
+  date: '30 DE ENERO',
+  title: 'Show Tropical en Vivo',
+  description: 'Empieza el Show trae un espectáculo especial de bailarines profesionales de salsa, que encenderán la pista con coreografías llenas de sabor, fuerza y movimiento. Después del show de baile, la noche continúa con un artista en vivo, creando el ambiente perfecto para seguir disfrutando, cantar, bailar y vivir una experiencia completa. Una noche donde el espectáculo se vive desde el primer minuto, música y show… todo en una sola noche',
+  image: 'https://a.storyblok.com/f/289340927670052/1080x1350/d1e996775e/arte-enero-30.png',
+  prices: [
+    { zone: 'Terraza', price: 25, cover: 5 },
+    { zone: 'Salón Principal', price: 35, cover: 5 },
+    { zone: 'VIP', price: 40, cover: 2 }
+  ]
 };
 
-onMounted(() => {
-  fetchEvents();
+const processedPrices = computed(() => {
+  return event.prices.map(p => {
+    const consumable = p.price - p.cover;
+    return {
+      zone: p.zone,
+      text: `$${p.price} ($${consumable} consumibles y $${p.cover} cover)`
+    };
+  });
 });
 </script>
 
@@ -35,35 +32,44 @@ onMounted(() => {
       <p class="events-page__subtitle">Descubre las experiencias exclusivas que hemos preparado para ti.</p>
     </div>
 
-    <div v-if="loading" class="events-page__state">
-      <p>Cargando eventos...</p>
-    </div>
-    
-    <div v-else-if="error" class="events-page__state events-page__state--error">
-      <p>{{ error }}</p>
-    </div>
-
-    <section v-else class="events-page__grid">
-      <EventCard 
-        v-for="story in stories" 
-        :key="story.uuid" 
-        :story="story" 
-      />
-      <div v-if="stories.length === 0" class="events-page__state">
-        <p>No hay eventos próximos programados en este momento.</p>
-      </div>
+    <section class="events-page__grid icon-center">
+      <article class="event-card">
+        <div class="event-card__image-wrapper">
+          <img :src="event.image" :alt="event.title" class="event-card__image" />
+        </div>
+        
+        <div class="event-card__content">
+            <div class="event-date">{{ event.date }}</div>
+            <h2 class="event-title">{{ event.title }}</h2>
+            <p class="event-desc">{{ event.description }}</p>
+            
+            <div class="event-prices">
+                <h3>Precios:</h3>
+                <ul>
+                    <li v-for="p in processedPrices" :key="p.zone">
+                        <strong>{{ p.zone }}:</strong> {{ p.text }}
+                    </li>
+                </ul>
+            </div>
+            
+            <router-link :to="{ name: 'event-detail', params: { slug: event.slug } }" class="event-cta">
+              RESERVAR AHORA
+            </router-link>
+        </div>
+      </article>
     </section>
   </main>
 </template>
 
 <style lang="scss" scoped>
 @use '@/styles/colorVariables.module.scss' as colors;
+@use 'sass:color';
 
 .events-page {
   padding: 4rem 1rem;
   max-width: 1200px;
   margin: 0 auto;
-  min-height: 80vh; // Ensure it takes up space even with few items
+  min-height: 80vh;
 
   &__header {
     text-align: center;
@@ -75,10 +81,6 @@ onMounted(() => {
     font-size: 2.5rem;
     color: colors.$accent-gold;
     margin-bottom: 1rem;
-
-    @media (min-width: 768px) {
-      font-size: 3.5rem;
-    }
   }
 
   &__subtitle {
@@ -89,29 +91,124 @@ onMounted(() => {
   }
 
   &__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+}
 
-    @media (min-width: 768px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
+.event-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(colors.$accent-gold, 0.3);
+  border-radius: 16px;
+  max-width: 900px;
+  width: 100%;
+  color: colors.$white;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
 
-    @media (min-width: 1024px) {
-      grid-template-columns: repeat(3, 1fr);
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  &__image-wrapper {
+    flex: 1;
+    min-height: 300px;
+    background: #000;
+
+    @media (max-width: 768px) {
+      min-height: 250px;
     }
   }
 
-  &__state {
-    text-align: center;
-    padding: 3rem;
-    font-size: 1.2rem;
-    color: colors.$text-light;
-    grid-column: 1 / -1;
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 
-    &--error {
-      color: colors.$error;
+  &__content {
+    flex: 1.2;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+.event-date {
+  color: colors.$accent-gold;
+  font-weight: bold;
+  letter-spacing: 2px;
+  font-size: 1.1rem;
+}
+
+.event-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: colors.$white;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.event-desc {
+  color: colors.$gray-300;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.event-prices {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: auto;
+
+  h3 {
+    color: colors.$accent-gold;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      margin-bottom: 0.5rem;
+      color: colors.$gray-300;
+      font-size: 0.95rem;
+
+      strong {
+        color: colors.$white;
+        margin-right: 0.5rem;
+      }
     }
+  }
+}
+
+.event-cta {
+  display: inline-block;
+  background: colors.$BRAND-BURGUNDY;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  align-self: flex-start;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: color.scale(colors.$BRAND-BURGUNDY, $lightness: 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(colors.$BRAND-BURGUNDY, 0.3);
   }
 }
 </style>
