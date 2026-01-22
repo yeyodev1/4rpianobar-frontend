@@ -1,9 +1,9 @@
 <script setup lang="ts">
 
 const locations = [
-  { id: 1, name: 'PIANO EN VIVO', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764170027/Foto_001_ztlntr.jpg' },
-  { id: 2, name: 'CANTANTES', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171485/Imagen_002_1_nkcu4w.jpg' },
-  { id: 3, name: 'TRIBUTOS', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764169930/food3_fmy8ca.jpg' },
+  { id: 1, name: 'PIANO EN VIVO', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1769113220/Piano_en_Vivo_-_Fotos_Web_lunuve.png' },
+  { id: 2, name: 'CANTANTES', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1769113311/Cantantes_Fotos_Web_yfsl6i.jpg' },
+  { id: 3, name: 'TRIBUTOS', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1769113438/Fotos_Web_-_Tributos_1_hsdzas.jpg' },
   { id: 4, name: 'DJs & FIESTA', image: 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1764171204/Foto_001_5_qtz4ad.jpg' },
 ]
 </script>
@@ -12,7 +12,7 @@ const locations = [
   <section class="locations" id="cartelera">
     <h2 class="locations__title">MÚSICA & SHOW</h2>
     <div class="locations__intro">
-      <p>Aquí no pones una playlist y listo. Cada noche tiene su propia energía.</p>
+      <p>El verdadero espectáculo comienza con la primera nota.</p>
     </div>
     <div class="cards">
       <div
@@ -25,7 +25,7 @@ const locations = [
       </div>
     </div>
     <div class="locations__footer">
-      <p>Algunas son para cantar. Otras para bailar. Otras para mirar a alguien y brindar sin decir nada.</p>
+      <p>Salir hoy. Brindar hoy. Celebrar hoy. Venir a 4R.</p>
     </div>
   </section>
 </template>
