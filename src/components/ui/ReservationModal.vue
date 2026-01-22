@@ -32,6 +32,10 @@ const props = defineProps({
   eventPrice: {
     type: Number,
     default: 0
+  },
+  ticketType: {
+    type: String,
+    default: ''
   }
 });
 
@@ -54,7 +58,8 @@ watch(() => props.isOpen, (newVal) => {
 
 const whatsappUrl = computed(() => {
   const peopleText = props.guestCount > 1 ? ` para ${props.guestCount} personas` : ' para 1 persona';
-  const text = `Hola, deseo reservar${peopleText} para el evento${props.eventName ? `: ${props.eventName}` : ''}.`;
+  const zoneText = props.ticketType ? ` en zona ${props.ticketType}` : '';
+  const text = `Hola, deseo reservar${peopleText}${zoneText} para el evento${props.eventName ? `: ${props.eventName}` : ''}.`;
   return `https://wa.me/593979279877?text=${encodeURIComponent(text)}`;
 });
 
@@ -71,6 +76,7 @@ const handlePaymentSuccess = (transaction: any) => {
       eventDate: props.eventDate,
       eventTime: props.eventTime,
       guestCount: props.guestCount,
+      ticketType: props.ticketType,
       timestamp: Date.now()
     }));
   } catch (e) {
@@ -146,6 +152,7 @@ onMounted(() => {
               :guest-count="guestCount"
               :event-date="eventDate"
               :event-time="eventTime"
+              :ticket-type="ticketType"
               show-success-header
               @close="close"
             />
@@ -186,6 +193,10 @@ onMounted(() => {
                 <p class="summary-item">
                   <span>Evento:</span>
                   <strong>{{ eventName }}</strong>
+                </p>
+                <p class="summary-item" v-if="ticketType">
+                  <span>Zona:</span>
+                  <strong>{{ ticketType }}</strong>
                 </p>
                 <p class="summary-item">
                   <span>Asistentes:</span>
