@@ -5,6 +5,7 @@ import paymentezCheckout from '@/services/paymentezCheckout';
 import type { CheckoutResponse } from '@/services/paymentezCheckout';
 import PaymentVerification from '@/components/payment/PaymentVerification.vue';
 import PaymentTransactionList from '@/components/payment/PaymentTransactionList.vue';
+import TermsPdf from '@/assets/termsandconditions/Terminos-y-Condiciones-4R.pdf';
 
 const props = defineProps({
   userEmail: {
@@ -44,11 +45,13 @@ const step = ref<'identifying' | 'ready' | 'transactions'>('identifying');
 const internalUserId = ref(props.userId);
 const internalEmail = ref(props.userEmail);
 const internalName = ref(props.userName);
+const internalCedula = ref('');
 const verificationCode = ref('');
 const isProcessing = ref(false);
 const errorMessage = ref('');
 const checkoutInitialized = ref(false);
 const helpRequested = ref(props.autoHelp);
+const termsAccepted = ref(false);
 
 // Watch for autoHelp changes
 watch(() => props.autoHelp, (newVal) => {
@@ -86,9 +89,11 @@ const initializeCheckout = async () => {
 };
 
 // Handle verification success
-const handleVerified = (data: { email: string, code: string, userId?: string | null }) => {
+const handleVerified = (data: { email: string, name: string, cedula: string, code: string, userId?: string | null }) => {
   errorMessage.value = '';
   internalEmail.value = data.email;
+  internalName.value = data.name;
+  internalCedula.value = data.cedula;
   verificationCode.value = data.code;
 
   if (data.userId) {
@@ -113,7 +118,8 @@ const processPayment = async () => {
       email: internalEmail.value,
       amount: props.amount,
       description: `${props.description} (Entradas: ${props.guestCount})`,
-      verificationCode: verificationCode.value
+      verificationCode: verificationCode.value,
+      cedula: internalCedula.value
     });
 
     console.log('[PaymentezCheckout] Opening with reference:', reference);
@@ -143,7 +149,9 @@ const handleCheckoutResponse = async (response: CheckoutResponse) => {
         const savedResponse = await paymentAPI.saveTransaction(
           response.transaction,
           internalUserId.value,
-          internalEmail.value
+          internalEmail.value,
+          internalName.value,
+          internalCedula.value
         );
         // Emit the saved transaction from backend (contains DB ID, etc.)
         emit('success', savedResponse.transaction);
@@ -187,6 +195,7 @@ onUnmounted(() => {
       <PaymentVerification 
         v-model:email="internalEmail"
         v-model:name="internalName"
+        v-model:cedula="internalCedula"
         :error="errorMessage"
         @verified="handleVerified"
       />
@@ -248,13 +257,22 @@ onUnmounted(() => {
 
         <div class="checkout-info">
           <i class="fa-solid fa-shield-check"></i>
-          <p>Pago 100% Seguro procesado por Paymentez</p>
+          <p>Pago 100% Seguro procesado por Nuvei</p>
+        </div>
+
+        <div class="terms-container">
+          <label class="terms-label">
+            <input type="checkbox" v-model="termsAccepted" class="terms-checkbox">
+            <span>
+              He leído y acepto los <a :href="TermsPdf" target="_blank" class="terms-link">Términos y Condiciones</a>
+            </span>
+          </label>
         </div>
 
         <button 
           @click="processPayment" 
           class="btn-pay"
-          :disabled="isProcessing || !checkoutInitialized"
+          :disabled="isProcessing || !checkoutInitialized || !termsAccepted"
         >
           <i class="fa-solid fa-lock" v-if="!isProcessing"></i>
           <div class="btn-spinner" v-else></div>
@@ -605,6 +623,35 @@ onUnmounted(() => {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+.terms-container {
+  display: flex;
+  justify-content: center;
+  padding: 0 0.5rem;
+}
+
+.terms-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: colors.$text-dark;
+  cursor: pointer;
+  user-select: none;
+
+  .terms-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: colors.$BRAND-PRIMARY;
+    cursor: pointer;
+  }
+
+  .terms-link {
+    color: colors.$BRAND-PRIMARY;
+    text-decoration: underline;
+    font-weight: 600;
   }
 }
 </style>
