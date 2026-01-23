@@ -13,6 +13,7 @@ export interface PaymentRequest {
 export interface VerificationRequest {
   email: string;
   name?: string;
+  cedula?: string;
 }
 
 export interface VerificationResponse {
@@ -89,6 +90,7 @@ export interface InitReferenceRequest {
   amount: number;
   description: string;
   verificationCode: string;
+  cedula?: string;
 }
 
 export interface InitReferenceResponse {
@@ -137,11 +139,13 @@ class PaymentAPI extends APIBase {
     return response.data;
   }
 
-  async saveTransaction(transaction: any, userId: string, email: string): Promise<any> {
+  async saveTransaction(transaction: any, userId: string, email: string, name?: string, cedula?: string): Promise<any> {
     const response = await this.post('payment/paymentez/save-transaction', {
       transaction,
       userId,
-      email
+      email,
+      name,
+      cedula
     });
     return response.data;
   }
