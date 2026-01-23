@@ -28,7 +28,7 @@ import FooterSection from './FooterSection.vue'
         <div class="info-card">
           <h3><i class="fa-solid fa-location-dot"></i> Ubicación</h3>
           <p>Edificio Xima, local #02</p>
-          <p class="sub-text">(atrás de la Clínica Kenddy)</p>
+          <p class="sub-text">(atrás de la Clínica Kennedy)</p>
         </div>
       </div>
     </section>

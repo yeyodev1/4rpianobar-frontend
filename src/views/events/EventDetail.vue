@@ -204,7 +204,7 @@ const goBack = () => {
             <div class="info-block" v-if="event.location">
               <h3><i class="fa-solid fa-location-dot"></i> Ubicación</h3>
               <p class="location-main">{{ event.location }}</p>
-              <p class="location-detail">Edificio Xima, local #02.<br>(atrás de la Clínica Kenddy)</p>
+              <p class="location-detail">Edificio Xima, local #02.<br>(atrás de la Clínica Kennedy)</p>
             </div>
             
             <div class="info-block" v-if="event.prices && event.prices.length">
