@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import paymentAPI from '@/services/payment';
 
 const props = defineProps({
@@ -11,17 +11,22 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  cedula: {
+    type: String,
+    default: ''
+  },
   error: {
     type: String,
     default: ''
   }
 });
 
-const emit = defineEmits(['verified', 'update:email', 'update:name']);
+const emit = defineEmits(['verified', 'update:email', 'update:name', 'update:cedula']);
 
 const step = ref(1); // 1: input, 2: verify
 const internalEmail = ref(props.email);
 const internalName = ref(props.name);
+const internalCedula = ref(props.cedula);
 const code = ref('');
 const isLoading = ref(false);
 
@@ -46,15 +51,33 @@ watch(() => props.error, (newVal) => {
 });
 
 // Clear error when user types
-watch([internalEmail, internalName, code], () => {
+watch([internalEmail, internalName, internalCedula, code], () => {
   if (errorMessage.value) errorMessage.value = '';
 });
 
 const resolvedUserId = ref<string | null>(null);
 
+const isStep1Valid = computed(() => {
+  if (!internalEmail.value || !internalName.value || !internalCedula.value) return false;
+
+  // Name validation (at least 2 words)
+  const nameParts = internalName.value.trim().split(/\s+/);
+  if (nameParts.length < 2) return false;
+
+  return true;
+});
+
 const requestToken = async () => {
-  if (!internalEmail.value) {
-    errorMessage.value = 'El correo electrónico es requerido.';
+  // 1. Basic empty check
+  if (!internalEmail.value || !internalName.value || !internalCedula.value) {
+    errorMessage.value = 'Todos los campos (Nombre, Cédula, Correo) son obligatorios.';
+    return;
+  }
+
+  // 2. Name validation (at least 2 words)
+  const nameParts = internalName.value.trim().split(/\s+/);
+  if (nameParts.length < 2) {
+    errorMessage.value = 'Por favor, ingresa tu nombre completo (Nombre y Apellido).';
     return;
   }
 
@@ -63,8 +86,9 @@ const requestToken = async () => {
     errorMessage.value = '';
     const response = await paymentAPI.requestVerification({
       email: internalEmail.value,
-      name: internalName.value
-    });
+      name: internalName.value,
+      cedula: internalCedula.value
+    } as any);
     resolvedUserId.value = response.userId;
     step.value = 2;
   } catch (err: any) {
@@ -94,8 +118,11 @@ const verifyCode = async () => {
     // If successful, the code is valid
     emit('update:email', internalEmail.value);
     emit('update:name', internalName.value);
+    emit('update:cedula', internalCedula.value);
     emit('verified', {
       email: internalEmail.value,
+      name: internalName.value,
+      cedula: internalCedula.value,
       code: code.value,
       userId: resolvedUserId.value
     });
@@ -128,7 +155,18 @@ const verifyCode = async () => {
         <input 
           v-model="internalName" 
           type="text" 
-          placeholder="Tu nombre"
+          placeholder="Nombre y Apellido"
+          :disabled="isLoading"
+          class="form-input"
+        />
+      </div>
+
+      <div class="input-group">
+        <label>Cédula / ID</label>
+        <input 
+          v-model="internalCedula" 
+          type="text" 
+          placeholder="Número de Identidad"
           :disabled="isLoading"
           class="form-input"
         />
@@ -141,7 +179,7 @@ const verifyCode = async () => {
         </div>
       </Transition>
 
-      <button @click="requestToken" class="btn-primary" :disabled="isLoading">
+      <button @click="requestToken" class="btn-primary" :disabled="isLoading || !isStep1Valid">
         <span v-if="isLoading">Enviando...</span>
         <span v-else>Recibir Código de Verificación</span>
       </button>
@@ -255,8 +293,11 @@ const verifyCode = async () => {
   cursor: pointer;
 
   &:disabled {
-    opacity: 0.7;
+    background-color: #e0e0e0;
+    color: #a0a0a0;
     cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
   }
 }
 
