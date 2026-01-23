@@ -18,12 +18,23 @@ const isCheckoutOpen = ref(false); // Track if Checkout modal is open
 // Selected Zone Logic
 const selectedZoneName = ref<string>('');
 
+const minGuests = computed(() => selectedZoneName.value === 'VIP' ? 10 : 1);
+const maxGuests = computed(() => selectedZoneName.value === 'VIP' ? 15 : 20);
+
+// Watcher to enforce limits when switching zones
+watch(selectedZoneName, (newZone) => {
+  if (newZone === 'VIP') {
+    if (guestCount.value < 10) guestCount.value = 10;
+    if (guestCount.value > 15) guestCount.value = 15;
+  }
+});
+
 const incrementGuests = () => {
-  if (guestCount.value < 20) guestCount.value++;
+  if (guestCount.value < maxGuests.value) guestCount.value++;
 };
 
 const decrementGuests = () => {
-  if (guestCount.value > 1) guestCount.value--;
+  if (guestCount.value > minGuests.value) guestCount.value--;
 };
 
 const whatsappDirectUrl = computed(() => {
@@ -212,7 +223,10 @@ const goBack = () => {
                   </div>
                   <div class="zone-price">${{ p.price }}</div>
                   <div class="zone-detail">
-                    (${{ p.price - p.cover }} consumibles + ${{ p.cover }} cover)
+                    <span class="cost-breakdown">(${{ p.price - p.cover }} consumibles + ${{ p.cover }} cover)</span>
+                    <div v-if="p.zone === 'VIP'" class="zone-restriction">
+                      <i class="fa-solid fa-users"></i> Mínimo 10 - Máximo 15 personas
+                    </div>
                   </div>
                 </div>
               </div>
@@ -233,9 +247,9 @@ const goBack = () => {
             <div class="guest-selector">
               <label class="selector-label">Personas:</label>
               <div class="counter-wrapper">
-                <button @click="decrementGuests" :disabled="guestCount <= 1" class="btn-counter" aria-label="Disminuir">-</button>
+                <button @click="decrementGuests" :disabled="guestCount <= minGuests" class="btn-counter" aria-label="Disminuir">-</button>
                 <span class="guest-count">{{ guestCount }}</span>
-                <button @click="incrementGuests" :disabled="guestCount >= 20" class="btn-counter" aria-label="Aumentar">+</button>
+                <button @click="incrementGuests" :disabled="guestCount >= maxGuests" class="btn-counter" aria-label="Aumentar">+</button>
               </div>
             </div>
             
@@ -688,6 +702,22 @@ const goBack = () => {
   font-size: 0.85rem;
   color: colors.$text-light;
   margin-left: 2.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.zone-restriction {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: rgba(colors.$accent-gold, 0.15);
+  color: color.scale(colors.$accent-gold, $lightness: -20%);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  width: fit-content;
 }
 
 .selected-summary {
