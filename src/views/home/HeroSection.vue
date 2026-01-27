@@ -16,6 +16,27 @@ onMounted(() => {
   intervalId = setInterval(nextImage, 5000)
 })
 
+const openCartelera = async () => {
+  const scriptUrl = 'https://script.google.com/macros/s/AKfycbyhgd1WUBvN4_L422E-tFP4hNWluKKDgiJdkZ0EYJ_hQzfp44N4AQOdsK6QGHoB-sy7/exec';
+  const folderUrl = 'https://drive.google.com/drive/folders/1pyQuPLgBbwE-IoFxDj9aFfsIAObM7Lur?usp=sharing';
+
+  try {
+    // Intentamos obtener el link directo desde el script
+    const response = await fetch(scriptUrl);
+    const data = await response.json();
+
+    if (data && data.url) {
+      window.open(data.url, '_blank');
+    } else {
+      throw new Error('No se obtuvo URL válida');
+    }
+  } catch (error) {
+    console.warn('Falló la obtención automática, abriendo carpeta de respaldo...', error);
+    // Si falla algo (CORS, script no actualizado, etc), abrimos la carpeta segura
+    window.open(folderUrl, '_blank');
+  }
+}
+
 onUnmounted(() => {
   clearInterval(intervalId)
 })
@@ -41,9 +62,9 @@ onUnmounted(() => {
         <a href="https://wa.me/593979279877" target="_blank" class="hero__btn hero__btn--primary">
           RESERVAR MESA
         </a>
-        <a href="https://script.google.com/macros/s/AKfycbzftqJLMjTB_ufEOLR27V8NRYwN3xEx1DnJjVgYhPM2-IVWULZ2dT7jH0wK1iBv7T-T/exec" target="_blank" class="hero__btn hero__btn--secondary">
+        <button @click="openCartelera" class="hero__btn hero__btn--secondary cartelera-btn">
           VER CARTELERA
-        </a>
+        </button>
       </div>
     </div>
   </section>
@@ -157,6 +178,15 @@ onUnmounted(() => {
 
 .hero__btn--secondary:hover {
   background: rgba($accent-gold, 0.1);
+}
+
+.cartelera-btn {
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  background: transparent;
+  font-family: inherit;
+  /* Inherit font from parent/button reset if needed, mostly handled by hero__btn */
 }
 
 /* Transition Effects */
