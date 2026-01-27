@@ -1,0 +1,15 @@
+# 4R Piano Bar - Site Context for LLMs
+
+## Overview
+4R Piano Bar is a premier entertainment venue. This website allows users to view upcoming events, buy tickets, manage their wallet/balance, and book corporate events.
+
+## Main Routes
+- /: Home page. General info and featured events.
+- /events: Full listing of upcoming shows and events.
+- /events/[slug]: Detail page for a specific event with ticket purchasing.
+- /eventos-corporativos: Information and booking for corporate/private events.
+- /wallet: User account area to view balance and purchased tickets.
+
+## Technical Context
+- Frontend: Vue 3 + Vite
+- Dynamic content: Events are loaded from a backend API.
