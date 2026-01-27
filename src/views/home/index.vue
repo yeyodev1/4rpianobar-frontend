@@ -42,12 +42,12 @@ import FooterSection from './FooterSection.vue'
         <h2 class="section-title">CÓMO CAMBIA LA NOCHE</h2>
         <div class="phases-grid">
           <div class="phase-card">
-            <h3>SPRITZ & DRINKS</h3>
-            <p>Para conversar, empezar tranquilo, mirarse de cerca.</p>
+            <h3>SPRITZ & DIP</h3>
+            <p>Para conversar, cenar y empezar la noche.</p>
           </div>
           <div class="phase-card">
             <h3>FARRA</h3>
-            <p>Para el show, el piano, los coros y los brindis.</p>
+            <p>show en vivo, dj y mucha fiesta.</p>
           </div>
           <div class="phase-card">
             <h3>AFTER</h3>

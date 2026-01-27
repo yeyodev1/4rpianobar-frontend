@@ -11,7 +11,7 @@
       <p class="card__text">
         Creemos que un buen trago debe ser una experiencia completa. Por eso, en 4R Piano Bar nos esmeramos en el detalle: cócteles que humean, aromas que envuelven y presentaciones que cautivan.
       </p>
-      <a href="https://drive.google.com/drive/folders/1-4bBthktrC9y5F-Up-IPKWXJQwU0i-_h?usp=sharing" target="_blank" rel="noopener" class="card__link" aria-label="Ver carta de tragos">
+      <a href="/menu.pdf" target="_blank" rel="noopener" class="card__link" aria-label="Ver carta de tragos">
         Ver carta <i class="fa-solid fa-arrow-right"></i>
       </a>
     </div>
