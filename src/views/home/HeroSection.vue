@@ -41,7 +41,7 @@ onUnmounted(() => {
         <a href="https://wa.me/593979279877" target="_blank" class="hero__btn hero__btn--primary">
           RESERVAR MESA
         </a>
-        <a href="https://drive.google.com/drive/folders/1gtrJAJrdyjvYTUh2Vtr1ekkO97b2eLoG?usp=sharing" target="_blank" class="hero__btn hero__btn--secondary">
+        <a href="https://script.google.com/macros/s/AKfycbyOuHphzgDUA1XBneXmJRnRfkLj8g2qYzICDvLbEJN3vkVSkGUl6pbj8AP7YdsMG5Zj/exec" target="_blank" class="hero__btn hero__btn--secondary">
           VER CARTELERA
         </a>
       </div>
