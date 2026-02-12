@@ -3,6 +3,7 @@ import { RouterView, useRouter, useRoute } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import HeaderBar from './components/layout/HeaderBar.vue'
 import { useDynamicFilesStore } from '@/stores/dynamicFiles'
+import DynamicFileModal from '@/components/common/DynamicFileModal.vue'
 
 const dynamicFiles = useDynamicFilesStore()
 
@@ -15,9 +16,10 @@ function gotoEvents() { closeMenu(); router.push({ name: 'events' }) }
 function gotoHome() { closeMenu(); router.push({ name: 'home' }) }
 function gotoCorporateEvents() { closeMenu(); router.push({ name: 'corporate-events' }) }
 
-onMounted(() => {
-  dynamicFiles.fetchMenuUrl()
-})
+function openMenu() {
+  closeMenu()
+  dynamicFiles.openFile('menu')
+}
 </script>
 
 <template>
@@ -31,7 +33,7 @@ onMounted(() => {
       </button>
       <div class="content">
         <button v-if="route.name !== 'home'" class="overlay__link" @click="gotoHome">INICIO</button>
-        <a :href="dynamicFiles.menuUrl || '/menu.pdf'" target="_blank" class="overlay__link">MENÚ</a>
+        <button class="overlay__link" @click="openMenu">MENÚ</button>
         <button v-if="route.name !== 'events'" class="overlay__link" @click="gotoEvents">EVENTOS</button>
         <button v-if="route.name !== 'corporate-events'" class="overlay__link" @click="gotoCorporateEvents">CORPORATIVO</button>
       </div>
@@ -39,6 +41,7 @@ onMounted(() => {
   </transition>
 
   <RouterView />
+  <DynamicFileModal />
 </template>
 
 <style lang="scss" scoped>

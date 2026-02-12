@@ -11,47 +11,16 @@ const images = [hero1, hero2, hero3]
 const currentImageIndex = ref(0)
 let intervalId: number | undefined
 
-// Cartelera State
-const showCarteleraModal = ref(false)
-const loadingCartelera = ref(false)
-const finalCarteleraUrl = ref('')
-const folderUrl = 'https://drive.google.com/drive/folders/1pyQuPLgBbwE-IoFxDj9aFfsIAObM7Lur?usp=sharing'
-
 const nextImage = () => {
   currentImageIndex.value = (currentImageIndex.value + 1) % images.length
 }
 
 const openCartelera = async () => {
-  showCarteleraModal.value = true
-  loadingCartelera.value = true
-  finalCarteleraUrl.value = '' // Reset previous
-
-  try {
-    const url = await dynamicFiles.fetchCarteleraUrl()
-
-    if (url) {
-      finalCarteleraUrl.value = url
-      // Intentamos abrirlo automáticamente
-      const popup = window.open(url, '_blank')
-
-      // Si el popup es bloqueado (popup es null o tiene propiedades restringidas), el modal se mantiene útil
-      if (!popup || popup.closed || typeof popup.closed == 'undefined') {
-        console.warn('Posible bloqueo de popup')
-      }
-    } else {
-      throw new Error('No se obtuvo URL válida')
-    }
-  } catch (error) {
-    console.warn('Falló la obtención, usando respaldo', error)
-    finalCarteleraUrl.value = folderUrl
-    // window.open(folderUrl, '_blank') // Opcional: auto-abrir fallback
-  } finally {
-    loadingCartelera.value = false
-  }
+  dynamicFiles.openFile('cartelera')
 }
 
 const closeModal = () => {
-  showCarteleraModal.value = false
+  dynamicFiles.closeModal()
 }
 
 onMounted(() => {
@@ -88,35 +57,6 @@ onUnmounted(() => {
         </button>
       </div>
     </div>
-    
-    <!-- Modal de Carga / Confirmación -->
-    <transition name="fade">
-      <div v-if="showCarteleraModal" class="modal-overlay">
-        <div class="modal-content">
-          <button class="modal-close" @click="closeModal"><i class="fa-solid fa-xmark"></i></button>
-          
-          <div v-if="loadingCartelera" class="modal-body loading-state">
-            <div class="spinner"></div>
-            <p>Buscando cartelera actual...</p>
-          </div>
-          
-          <div v-else class="modal-body ready-state">
-            <i class="fa-solid fa-circle-check icon-success"></i>
-            <h3>¡Encontrada!</h3>
-            <p class="info-text">Abriendo cartelera...</p>
-            
-            <div class="warning-box">
-              <i class="fa-solid fa-triangle-exclamation"></i>
-              <p>Si no se abrió automáticamente, es posible que tengas un bloqueador de anuncios.</p>
-            </div>
-            
-            <a :href="finalCarteleraUrl" target="_blank" class="manual-btn" @click="closeModal">
-              ABRIR MANUALMENTE
-            </a>
-          </div>
-        </div>
-      </div>
-    </transition>
   </section>
 </template>
 
