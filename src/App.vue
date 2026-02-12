@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { RouterView, useRouter, useRoute } from 'vue-router'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import HeaderBar from './components/layout/HeaderBar.vue'
+import { useDynamicFilesStore } from '@/stores/dynamicFiles'
+
+const dynamicFiles = useDynamicFilesStore()
 
 const menuOpen = ref(false)
 function toggleMenu() { menuOpen.value = !menuOpen.value }
@@ -11,6 +14,10 @@ const route = useRoute()
 function gotoEvents() { closeMenu(); router.push({ name: 'events' }) }
 function gotoHome() { closeMenu(); router.push({ name: 'home' }) }
 function gotoCorporateEvents() { closeMenu(); router.push({ name: 'corporate-events' }) }
+
+onMounted(() => {
+  dynamicFiles.fetchMenuUrl()
+})
 </script>
 
 <template>
@@ -24,7 +31,7 @@ function gotoCorporateEvents() { closeMenu(); router.push({ name: 'corporate-eve
       </button>
       <div class="content">
         <button v-if="route.name !== 'home'" class="overlay__link" @click="gotoHome">INICIO</button>
-        <a href="/menu.pdf" target="_blank" class="overlay__link">MENÚ</a>
+        <a :href="dynamicFiles.menuUrl || '/menu.pdf'" target="_blank" class="overlay__link">MENÚ</a>
         <button v-if="route.name !== 'events'" class="overlay__link" @click="gotoEvents">EVENTOS</button>
         <button v-if="route.name !== 'corporate-events'" class="overlay__link" @click="gotoCorporateEvents">CORPORATIVO</button>
       </div>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useDynamicFilesStore } from '@/stores/dynamicFiles'
+const dynamicFiles = useDynamicFilesStore()
 </script>
 
 <template>
@@ -11,7 +13,7 @@
       <p class="card__text">
         Creemos que un buen trago debe ser una experiencia completa. Por eso, en 4R Piano Bar nos esmeramos en el detalle: cócteles que humean, aromas que envuelven y presentaciones que cautivan.
       </p>
-      <a href="/menu.pdf" target="_blank" rel="noopener" class="card__link" aria-label="Ver carta de tragos">
+      <a :href="dynamicFiles.menuUrl || '/menu.pdf'" target="_blank" rel="noopener" class="card__link" aria-label="Ver carta de tragos">
         Ver carta <i class="fa-solid fa-arrow-right"></i>
       </a>
     </div>

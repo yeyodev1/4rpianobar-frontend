@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useDynamicFilesStore } from '@/stores/dynamicFiles'
+
+const dynamicFiles = useDynamicFilesStore()
 const hero1 = 'https://res.cloudinary.com/dpimsaaa4/image/upload/v1769120623/Foto_3_de_FOTOS_WEB_ab65vz.png'
 import hero2 from '@/assets/static/restaurant/hero2.jpg'
 import hero3 from '@/assets/static/restaurant/hero3.jpg'
@@ -23,16 +26,13 @@ const openCartelera = async () => {
   loadingCartelera.value = true
   finalCarteleraUrl.value = '' // Reset previous
 
-  const scriptUrl = 'https://script.google.com/macros/s/AKfycbyhgd1WUBvN4_L422E-tFP4hNWluKKDgiJdkZ0EYJ_hQzfp44N4AQOdsK6QGHoB-sy7/exec'
-
   try {
-    const response = await fetch(scriptUrl)
-    const data = await response.json()
+    const url = await dynamicFiles.fetchCarteleraUrl()
 
-    if (data && data.url) {
-      finalCarteleraUrl.value = data.url
+    if (url) {
+      finalCarteleraUrl.value = url
       // Intentamos abrirlo automáticamente
-      const popup = window.open(data.url, '_blank')
+      const popup = window.open(url, '_blank')
 
       // Si el popup es bloqueado (popup es null o tiene propiedades restringidas), el modal se mantiene útil
       if (!popup || popup.closed || typeof popup.closed == 'undefined') {
